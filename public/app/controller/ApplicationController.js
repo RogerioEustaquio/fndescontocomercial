@@ -21,7 +21,7 @@ Ext.define('App.controller.ApplicationController', {
         var me = this;
 
         // Se não tiver logado
-        me.mainAction();
+        // me.mainAction();
     },
     
     mainAction: function(){

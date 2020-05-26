@@ -13,8 +13,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
 
         Ext.define('App.view.fndescontocomercial.modelgrid', {
             extend: 'Ext.data.Model',
-            fields:[{name:'#',mapping:'#'},
-                    {name:'emp',mapping:'emp'},
+            fields:[{name:'emp',mapping:'emp'},
                     {name:'idLote',mapping:'idLote'},
                     {name:'data',mapping:'data'},
                     {name:'descricao',mapping:'descricao'},
@@ -66,7 +65,26 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             dataIndex: 'complemento',            
                             flex: 1
                         };
-      
+        
+        var colbtn =   {
+            xtype:'actioncolumn',
+                width:50,
+                align: 'center',
+                items: [
+                    {
+                        iconCls: 'fa fa-plus green-text',
+                        tooltip: 'NFs',
+                        handler: function(grid, rowIndex, colIndex) {
+
+                            var rec = grid.getStore().getAt(rowIndex);
+                            var id = rec.get('id') ;
+
+                            console.log(rec);
+                            console.log(id);
+
+                        }
+                    }]
+        };
 
         var arraycolums = [ colemp,
                             collote,
@@ -74,7 +92,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             coldescri,
                             colvldeb,
                             colvlcred,
-                            colcomp
+                            colcomp,
+                            colbtn
                         ];
         
 
@@ -92,8 +111,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         type: 'json',
                         rootProperty: 'data'
                     }
-                }
-                ,autoLoad: true
+                },
+                autoLoad: true
             }),
             columns: arraycolums,
             listeners: {

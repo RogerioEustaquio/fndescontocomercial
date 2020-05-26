@@ -63,6 +63,32 @@ class FnDescontoComercialController extends AbstractRestfulController
     {
         $data = array();
         
+        // $emp = $this->params()->fromQuery('emp',null);
+        // $dtinicio = $this->params()->fromQuery('dtinicio',null);
+        // $dtfim = $this->params()->fromQuery('dtfim',null);
+
+        $emp        = $this->params()->fromPost('emp',null);
+        $dtinicio   = $this->params()->fromPost('dtinicio',null);
+        $dtfim      = $this->params()->fromPost('dtfim',null);
+
+        $andsql = '';
+        if($emp){
+            $andsql =  "and em.apelido = '$emp' ";
+        }
+
+        if($dtinicio){
+            $andsql .=  "and LC.DATA >= '$dtinicio' ";
+        }
+
+        if($dtfim){
+            $andsql .=  "and LC.DATA <= '$dtfim' ";
+        }
+
+        if(!$andsql){
+            $andsql = "AND LC.DATA >= sysdate-104 ";
+            $andsql .= "AND LC.DATA <= sysdate";
+        }
+
         try {
 
             $session = $this->getSession();
@@ -72,31 +98,28 @@ class FnDescontoComercialController extends AbstractRestfulController
 
             $sql = "select * 
             from (SELECT EM.APELIDO||'-'||LC.ID_LOTE||'-'||LC.DATA AS ID,
-                            EM.APELIDO AS EMP,
-                            --LC.ID_LANCAMENTO,
-                            LC.ID_LOTE,
-                            LC.DATA,
-                            --HP.ID_HP,
-                            HP.DESCRICAO,
-            
-                            --DECODE(LC.ID_CONTA_DEBITO, 8235, LC.ID_CCUSTO_DEBITO, LC.ID_CCUSTO_CREDITO) as CCUSTO,
-                            DECODE(LC.ID_CONTA_DEBITO, 8235, LC.VALOR, NULL) as VALOR_DEBITO,
-                            DECODE(LC.ID_CONTA_CREDITO, 8235, LC.VALOR, NULL) as VALOR_CREDITO,
-                            
-                            LC.COMPLEMENTO_HP AS COMPLEMENTO, 
-                            INITCAP(HP.DESCRICAO || ' ' || LC.COMPLEMENTO_HP) HISTORICO
+                        EM.APELIDO AS EMP,
+                        --LC.ID_LANCAMENTO,
+                        LC.ID_LOTE,
+                        LC.DATA,
+                        --HP.ID_HP,
+                        HP.DESCRICAO,
+                        --DECODE(LC.ID_CONTA_DEBITO, 8235, LC.ID_CCUSTO_DEBITO, LC.ID_CCUSTO_CREDITO) as CCUSTO,
+                        DECODE(LC.ID_CONTA_DEBITO, 8235, LC.VALOR, NULL) as VALOR_DEBITO,
+                        DECODE(LC.ID_CONTA_CREDITO, 8235, LC.VALOR, NULL) as VALOR_CREDITO,
+                        LC.COMPLEMENTO_HP AS COMPLEMENTO, 
+                        INITCAP(HP.DESCRICAO || ' ' || LC.COMPLEMENTO_HP) HISTORICO
                             
                     FROM MS.EMPRESA EM, MS.CO_LANCAMENTO LC, MS.CO_HP HP
                     WHERE LC.ID_EMPRESA = EM.ID_EMPRESA
-                        AND LC.ID_GRUPO_HP = HP.ID_GRUPO_HP
-                        AND LC.ID_HP = HP.ID_HP
-                        AND LC.ID_GRUPO_PC = 4
-                        AND ((LC.ID_CONTA_DEBITO = 8235) OR (LC.ID_CONTA_CREDITO = 8235))
-                        AND LC.DATA >= '01/01/2019'
-                        AND LC.DATA <  '22/05/2020'
-                        and lc.ID_EMPRESA in (select id_empresa from ms.empresa where id_matriz = 1)
+                    AND LC.ID_GRUPO_HP = HP.ID_GRUPO_HP
+                    AND LC.ID_HP = HP.ID_HP
+                    AND LC.ID_GRUPO_PC = 4
+                    AND ((LC.ID_CONTA_DEBITO = 8235) OR (LC.ID_CONTA_CREDITO = 8235))
+                    $andsql
+                    and lc.ID_EMPRESA in (select id_empresa from ms.empresa where id_matriz = 1)
                     ORDER BY DATA DESC, ID_LANCAMENTO DESC) lx";
-            
+
             $conn = $em->getConnection();
             $stmt = $conn->prepare($sql);
             
