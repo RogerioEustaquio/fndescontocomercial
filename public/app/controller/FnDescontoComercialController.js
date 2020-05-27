@@ -4,7 +4,9 @@ Ext.define('App.controller.FnDescontoComercialController', {
     requires: [
         'App.view.fndescontocomercial.Main',
         'App.view.fndescontocomercial.DescComercialForm',
-        'App.view.fndescontocomercial.DescComercialGrid'
+        'App.view.fndescontocomercial.DescComercialGrid',
+        'App.view.fndescontocomercial.DescComercialWin',
+        'App.view.fndescontocomercial.DescComercialGridNf'
     ],
 
     control: {

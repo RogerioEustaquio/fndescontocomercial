@@ -68,22 +68,24 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         
         var colbtn =   {
             xtype:'actioncolumn',
-                width:50,
-                align: 'center',
-                items: [
-                    {
-                        iconCls: 'fa fa-plus green-text',
-                        tooltip: 'NFs',
-                        handler: function(grid, rowIndex, colIndex) {
+            width:50,
+            align: 'center',
+            items: [
+                {
+                    iconCls: 'fa fa-plus green-text',
+                    tooltip: 'NFs',
+                    handler: function(grid, rowIndex, colIndex) {
 
-                            var rec = grid.getStore().getAt(rowIndex);
-                            var id = rec.get('id') ;
+                        var rec = grid.getStore().getAt(rowIndex);
+                        var id = rec.get('id') ;
 
-                            console.log(rec);
-                            console.log(id);
+                        console.log(rec);
+                        console.log(id);
 
-                        }
-                    }]
+                        Ext.create('App.view.fndescontocomercial.DescComercialWin').show();
+
+                    }
+                }]
         };
 
         var arraycolums = [ colemp,

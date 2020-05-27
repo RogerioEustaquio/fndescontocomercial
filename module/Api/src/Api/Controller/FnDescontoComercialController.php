@@ -85,7 +85,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         }
 
         if(!$andsql){
-            $andsql = "AND LC.DATA >= sysdate-104 ";
+            $andsql = "AND LC.DATA >= sysdate-105 ";
             $andsql .= "AND LC.DATA <= sysdate";
         }
 
@@ -148,70 +148,61 @@ class FnDescontoComercialController extends AbstractRestfulController
     }
 
 
-    public function listarprodutosAction()
+    public function listarnfsAction()
     {
         $data = array();
         
         try {
 
-            $pEmp = $this->params()->fromQuery('emp',null);
-            $pCod = $this->params()->fromQuery('codigo',null);
-
-            if(!$pEmp || !$pCod){
-                throw new \Exception('Parâmetros não informados.');
-            }
-
             $em = $this->getEntityManager();
             
-            $sql = "select distinct em.apelido as emp,
-                            i.cod_item||c.descricao as cod_item,
-                            i.descricao,
-                            m.descricao as marca, 
-                            null as preco_venda,
-                            e.custo_contabil,
-                            e.id_locacao as locacao,
-                            nvl(ace.icms,0) as icms,
-                            nvl(ic.aliq_pis,0)+nvl(ic.aliq_cofins,0) as pis_cofins,
-                            mg.margem
-                        from ms.tb_estoque e,
-                             ms.tb_item i,
-                             ms.tb_categoria c,
-                             ms.tb_item_categoria ic,
-                             ms.empresa em,
-                             ms.tb_marca m,
-                             (SELECT ID_EMPRESA, ID_ITEM, ID_CATEGORIA,
-                                    EH_ACESSORIO as acessorio,
-                                    GERAR_PRECO_VENDA,
-                                    (case when EH_ACESSORIO = 'S' then 17 end) as icms
-                             FROM MS.TB_ITEM_CATEGORIA_PARAM
-                             ) ace,
-                             xp_simuladortransf_margem mg
-                    where e.id_item = i.id_item
-                    and e.id_categoria = c.id_categoria
-                    and e.id_empresa = em.id_empresa
-                    and e.id_item = ic.id_item
-                    and e.id_categoria = ic.id_categoria
+            $sql = "select e.apelido as emp,
+                            vi.numero_nf,
+                            vi.id_pessoa,
+                            p.nome,
+                            trunc(vi.data_emissao) as data_emissao,
+                            --sum(vi.qtde) as qtde,
+                            --sum(vi.rob_sem_desconto) as robx,
+                            --sum(vi.desconto) as desconto,
+                            sum(vi.rob) as valor
+                            --sum(vi.rol) as rol,
+                            --sum(vi.custo) as cmv,
+                            --sum(nvl(vi.rol,0)-nvl(vi.custo,0)) as lb,
+                            --round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb 
+                    from pricing.ie_ve_venda_item vi,
+                            ms.empresa e,
+                            ms.tb_item_categoria ic,
+                            ms.tb_item i,
+                            ms.tb_categoria c,
+                            ms.tb_marca m,
+                            ms.tb_estoque es,
+                            ms.pessoa p
+                    where vi.id_empresa = e.id_empresa
+                    and vi.id_item = ic.id_item
+                    and vi.id_categoria = ic.id_categoria
+                    and vi.id_item = i.id_item
+                    and vi.id_categoria = c.id_categoria
                     and ic.id_marca = m.id_marca
-                    and e.id_empresa = ace.id_empresa(+)
-                    and e.id_item = ace.id_item(+)
-                    and e.id_categoria = ace.id_categoria(+)
-                    and e.id_empresa = mg.id_empresa
-                    and i.cod_item||c.descricao like upper('%$pCod%')
-                    and em.apelido = ?
-                    and rownum <= 5";
+                    and vi.id_empresa = es.id_empresa
+                    and vi.id_item = es.id_item
+                    and vi.id_categoria = es.id_categoria
+                    and vi.id_pessoa = p.id_pessoa
+                    and vi.id_operacao in (4,7)
+                    and trunc(vi.data_emissao, 'MM') >= '01/01/2019'
+                    and vi.id_pessoa = 34829915000126
+                    --and vi.numero_nf = '59613-1'
+                    and rownum <= 5
+                    group by e.apelido, vi.data_emissao, vi.numero_nf, vi.usuario_desconto, vi.id_pessoa, p.id_pessoa, p.nome
+                    order by vi.data_emissao desc";
 
             $conn = $em->getConnection();
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(1, $pEmp);
             
             $stmt->execute();
             $results = $stmt->fetchAll();
 
             $hydrator = new ObjectProperty;
-            $hydrator->addStrategy('custo_contabil', new ValueStrategy);
-            $hydrator->addStrategy('icms', new ValueStrategy);
-            $hydrator->addStrategy('pis_cofins', new ValueStrategy);
-            $hydrator->addStrategy('margem', new ValueStrategy);
+            $hydrator->addStrategy('valor', new ValueStrategy);
             $stdClass = new StdClass;
             $resultSet = new HydratingResultSet($hydrator, $stdClass);
             $resultSet->initialize($results);
