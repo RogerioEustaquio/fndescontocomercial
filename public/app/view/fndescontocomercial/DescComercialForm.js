@@ -71,36 +71,44 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                 });
 
         var consulta = Ext.create('Ext.Button', {
-                                    text: 'Consulta',
-                                    id: 'btnconsulta',
+                                    text: 'Consultar',
+                                    id: 'btnconsultar',
                                     margin: '28 2 2 2',
-                                    handler: function(form) {
+                                    handler: function() {
 
                                         var btnemp        = me.down('#comboempresa').getSelection().getData().empresa;
                                         var btndtinicio   = me.down('#dtinicio').getRawValue();
                                         var btndtfim      = me.down('#dtfim').getRawValue();
 
-                                        Ext.Ajax.request({
-                                            url : BASEURL + '/api/fndescontocomercial/descontofinanceiro',
-                                            method: 'POST',
-                                            params: {emp: btnemp,
-                                                     dtinicio: btndtinicio,
-                                                     dtfim: btndtfim
-                                                    },
-                                            success: function (response) {
+                                        var myStore =  me.up('panel').down('grid').getStore();
+                                        var myproxy = myStore.getProxy();
+                                        myproxy.setExtraParams({emp: btnemp,
+                                                                dtinicio: btndtinicio,
+                                                                dtfim: btndtfim
+                                                                });
+                                        myStore.reload();
 
-                                                var result = Ext.decode(response.responseText);
-                                                if(result.success){
+                                        // Ext.Ajax.request({
+                                        //     url : BASEURL + '/api/fndescontocomercial/descontofinanceiro',
+                                        //     method: 'POST',
+                                        //     params: {emp: btnemp,
+                                        //              dtinicio: btndtinicio,
+                                        //              dtfim: btndtfim
+                                        //             },
+                                        //     success: function (response) {
 
-                                                    var myStore =  me.up('panel').down('grid').getStore();
-                                                    myStore.removeAll();
+                                        //         var result = Ext.decode(response.responseText);
+                                        //         if(result.success){
 
-                                                    myStore.setData(result.data);
+                                        //             var myStore =  me.up('panel').down('grid').getStore();
+                                        //             myStore.removeAll();
 
-                                                }
+                                        //             myStore.setData(result.data);
 
-                                            }
-                                        });
+                                        //         }
+
+                                        //     }
+                                        // });
                                     }
                                 });
 

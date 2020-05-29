@@ -1,11 +1,37 @@
 Ext.define('App.view.fndescontocomercial.DescComercialWin', {
     extend: 'Ext.window.Window',
     xtype: 'descontocomercialwin',
+    id: 'descontocomercialwin',
     title: 'Notas',
     height: 300,
-    width: 600,
+    width: 700,
     layout: 'fit',
+    border: false,
+    tbar: [
+        {
+            xtype: 'fndescontocomercialformnf'
+        }
+    ],
     items: {  // Let's put an empty grid in just to illustrate fit layout
         xtype: 'fndescontocomercialgridnf'
-    }
+    },
+    bbar:[
+        '->',
+        {
+            xtype: 'form',
+            border: false,
+            items:[
+                {
+                    xtype: 'button',
+                    text: 'Vincular',
+                    id: 'btnvinculanf',
+                    margin: '2 2 2 2',
+                    handler: function(form) {
+                        
+                        // console.log(form.up('toolbar').up('window').down('grid').getStore().getData().items);
+                    }
+                }
+            ]
+        }
+    ]
 });

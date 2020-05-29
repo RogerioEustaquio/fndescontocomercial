@@ -63,13 +63,13 @@ class FnDescontoComercialController extends AbstractRestfulController
     {
         $data = array();
         
-        // $emp = $this->params()->fromQuery('emp',null);
-        // $dtinicio = $this->params()->fromQuery('dtinicio',null);
-        // $dtfim = $this->params()->fromQuery('dtfim',null);
+        $emp = $this->params()->fromQuery('emp',null);
+        $dtinicio = $this->params()->fromQuery('dtinicio',null);
+        $dtfim = $this->params()->fromQuery('dtfim',null);
 
-        $emp        = $this->params()->fromPost('emp',null);
-        $dtinicio   = $this->params()->fromPost('dtinicio',null);
-        $dtfim      = $this->params()->fromPost('dtfim',null);
+        // $emp        = $this->params()->fromPost('emp',null);
+        // $dtinicio   = $this->params()->fromPost('dtinicio',null);
+        // $dtfim      = $this->params()->fromPost('dtfim',null);
 
         $andsql = '';
         if($emp){
@@ -85,7 +85,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         }
 
         if(!$andsql){
-            $andsql = "AND LC.DATA >= sysdate-105 ";
+            $andsql = "AND LC.DATA >= sysdate-107 ";
             $andsql .= "AND LC.DATA <= sysdate";
         }
 
@@ -101,7 +101,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                         EM.APELIDO AS EMP,
                         --LC.ID_LANCAMENTO,
                         LC.ID_LOTE,
-                        LC.DATA,
+                        to_char(LC.DATA,'dd/mm/yyyy') as DATA,
                         --HP.ID_HP,
                         HP.DESCRICAO,
                         --DECODE(LC.ID_CONTA_DEBITO, 8235, LC.ID_CCUSTO_DEBITO, LC.ID_CCUSTO_CREDITO) as CCUSTO,
@@ -151,6 +151,18 @@ class FnDescontoComercialController extends AbstractRestfulController
     public function listarnfsAction()
     {
         $data = array();
+
+        $empnf = $this->params()->fromQuery('empnf',null);
+        $nrnf = $this->params()->fromQuery('nrnf',null);
+
+        $andsql = "";
+        if($empnf){
+            $andsql =  "and e.apelido = '$empnf' ";
+        }
+
+        if($nrnf){
+            $andsql .=  "and vi.numero_nf = $nrnf ";
+        }
         
         try {
 
@@ -160,7 +172,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                             vi.numero_nf,
                             vi.id_pessoa,
                             p.nome,
-                            trunc(vi.data_emissao) as data_emissao,
+                            to_char(trunc(vi.data_emissao),'dd/mm/yyyy') as data_emissao,
                             --sum(vi.qtde) as qtde,
                             --sum(vi.rob_sem_desconto) as robx,
                             --sum(vi.desconto) as desconto,
@@ -190,7 +202,8 @@ class FnDescontoComercialController extends AbstractRestfulController
                     and vi.id_operacao in (4,7)
                     and trunc(vi.data_emissao, 'MM') >= '01/01/2019'
                     and vi.id_pessoa = 34829915000126
-                    --and vi.numero_nf = '59613-1'
+                    --and vi.numero_nf = '59613-1' 
+                    $andsql
                     and rownum <= 5
                     group by e.apelido, vi.data_emissao, vi.numero_nf, vi.usuario_desconto, vi.id_pessoa, p.id_pessoa, p.nome
                     order by vi.data_emissao desc";

@@ -56,26 +56,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                 return utilFormat.Value(v);
             }
         };
-
-        var colcheck = {
-            xtype: 'checkcolumn',
-            width: 40,
-            checkOnly: false,
-            listeners: {
-                checkChange: function(){
-                    console.log(this.checked);
-                    if(this.checked == false){
-                        this.checked = true;
-                        console.log(this.checked);
-                    }else{
-                        this.checked = false;
-                    }
-                }
-            }  
-        };
         
-        var arraycolums = [ colcheck,
-                            colemp,
+        var arraycolums = [ colemp,
                             colnf,
                             colidpe,
                             colnome,
@@ -99,7 +81,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                         rootProperty: 'data'
                     }
                 },
-                autoLoad: true
+                autoLoad: false
             }),
             columns: arraycolums,
             listeners: {

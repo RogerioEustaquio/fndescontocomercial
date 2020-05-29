@@ -77,12 +77,46 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     handler: function(grid, rowIndex, colIndex) {
 
                         var rec = grid.getStore().getAt(rowIndex);
-                        var id = rec.get('id') ;
+                        var id = rec.get('id');
+                        var emp= rec.get('emp');
 
-                        console.log(rec);
-                        console.log(id);
+                        var objWin = Ext.getCmp('descontocomercialwin');
 
-                        Ext.create('App.view.fndescontocomercial.DescComercialWin').show();
+                        if(objWin != null){
+                            objWin.destroy();
+                        }
+                        
+                        objWin = Ext.create('App.view.fndescontocomercial.DescComercialWin');
+                        objWin.down('toolbar').down('form').down('#empnf').setValue(emp);
+                        objWin.show();
+
+                        // console.log(objWin.down('#btnvinculanf'));
+
+                        objWin.down('#btnvinculanf').on('click',function (){
+                            // grid.getStore().load();
+                            // objWin.close();
+                            console.log(rec.getData()); // Dados do boleto
+                            console.log(objWin.down('grid').getSelection()[0].getData()); //Dados NF selecionada
+
+                            Ext.Ajax.request({
+                                url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
+                                method: 'POST',
+                                params: {emp: btnemp,
+                                         dtinicio: btndtinicio,
+                                         dtfim: btndtfim
+                                        },
+                                success: function (response) {
+
+                                    var result = Ext.decode(response.responseText);
+                                    if(result.success){
+
+                                        console.log(result.data);
+
+                                    }
+
+                                }
+                            });
+                        });
 
                     }
                 }]
