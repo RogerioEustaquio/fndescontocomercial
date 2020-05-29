@@ -31,6 +31,19 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                         id: 'nrnf'
                     });
 
+        var dtemissao = Ext.create('Ext.form.field.Date',{
+                        name: 'Emissão',
+                        id: 'dtemissao',
+                        fieldLabel: 'Data',
+                        margin: '2 2 2 2',
+                        width: 135,
+                        labelWidth: 35,
+                        format: 'd/m/Y',
+                        altFormats: 'dmY',
+            //            maxValue: new Date(),
+                        emptyText: '__/__/____'
+                    });
+
         var consulta = Ext.create('Ext.Button', {
                                     text: 'Consultar',
                                     id: 'btnconsultarnf',
@@ -39,11 +52,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                         
                                         var empnf = form.up('form').down('#empnf').getValue();
                                         var nrnf = form.up('form').down('#nrnf').getValue();
+                                        var dtemissao = form.up('form').down('#dtemissao').getRawValue();
 
                                         var myStore =  me.up('panel').down('grid').getStore();
                                         var myproxy = myStore.getProxy();
                                         myproxy.setExtraParams({empnf: empnf,
-                                                                nrnf: nrnf
+                                                                nrnf: nrnf,
+                                                                dtemissao: dtemissao
                                                                 });
                                         myStore.reload();
                                     }
@@ -54,6 +69,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
             items: [
                 empbox,
                 nrnf,
+                dtemissao,
                 consulta
             ]
 

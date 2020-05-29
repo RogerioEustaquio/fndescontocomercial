@@ -95,22 +95,32 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         objWin.down('#btnvinculanf').on('click',function (){
                             // grid.getStore().load();
                             // objWin.close();
-                            console.log(rec.getData()); // Dados do boleto
-                            console.log(objWin.down('grid').getSelection()[0].getData()); //Dados NF selecionada
+                            // console.log(rec.getData()); // Dados do boleto
+                            // console.log(objWin.down('grid').getSelection()[0].getData()); //Dados NF selecionada
+
+                            var dadosnf = objWin.down('grid').getSelection()[0].getData();
+ 
+                            var param = {
+                                            emp: emp,
+                                            idlote: rec.get('idLote'),
+                                            dtboleto: rec.get('data'),
+                                            nrnf: dadosnf.numeroNf,
+                                            dtemissao: dadosnf.dataEmissao,
+                                            idpessoa: dadosnf.idPessoa
+                                        };
+                            
+                            console.log(param);
 
                             Ext.Ajax.request({
                                 url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
                                 method: 'POST',
-                                params: {emp: btnemp,
-                                         dtinicio: btndtinicio,
-                                         dtfim: btndtfim
-                                        },
+                                params: param,
                                 success: function (response) {
 
                                     var result = Ext.decode(response.responseText);
                                     if(result.success){
 
-                                        console.log(result.data);
+                                        console.log(result.message);
 
                                     }
 

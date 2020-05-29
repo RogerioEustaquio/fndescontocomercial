@@ -154,6 +154,7 @@ class FnDescontoComercialController extends AbstractRestfulController
 
         $empnf = $this->params()->fromQuery('empnf',null);
         $nrnf = $this->params()->fromQuery('nrnf',null);
+        $dtemissao = $this->params()->fromQuery('dtemissao',null);
 
         $andsql = "";
         if($empnf){
@@ -161,7 +162,11 @@ class FnDescontoComercialController extends AbstractRestfulController
         }
 
         if($nrnf){
-            $andsql .=  "and vi.numero_nf = $nrnf ";
+            $andsql .=  "and vi.numero_nf = '$nrnf' ";
+        }
+
+        if($dtemissao){
+            $andsql .=  "and to_char(trunc(vi.data_emissao),'dd/mm/yyyy') = '$dtemissao' ";
         }
         
         try {
@@ -234,88 +239,35 @@ class FnDescontoComercialController extends AbstractRestfulController
         return $this->getCallbackModel();
     }
 
-    public function simulacaotransfAction()
+    public function vincularnfboletoAction()
     {
         $data = array();
         
         try {
-            $dest = $this->params()->fromQuery('param1',null);
-            $orig = $this->params()->fromQuery('param2',null);
-            $lprod = $this->params()->fromQuery('param3',null);
-            $vfrete  = $this->params()->fromQuery('param4',null);
-
-            if(!$dest){
-                $dest   = $this->params()->fromPost('param1',null);
-            }
-            if(!$orig){
-                $orig   = $this->params()->fromPost('param2',null);
-            }
-            if(!$lprod){
-                $lprod   = $this->params()->fromPost('param3',null);
-            }
-            if(!$vfrete){
-                $vfrete   = $this->params()->fromPost('param4',null);
-            }
-
-            $listaitens = explode(',',$lprod);
-            $lprod='';
-
-            for ($i=0;$i < count($listaitens); $i++) {
-                
-                if($lprod){
-                    $lprod .= ','."'".$listaitens[$i]."'";
-                }else{
-                    $lprod = "'".$listaitens[$i]."'";
-                }
-            }
+            $emp = $this->params()->fromPost('emp',null);
+            $idlote = $this->params()->fromPost('idlote',null);
+            $dtboleto = $this->params()->fromPost('dtboleto',null);
+            $nrnf  = $this->params()->fromPost('nrnf',null);
+            $dtemissao  = $this->params()->fromPost('dtemissao',null);
+            $idpessoa  = $this->params()->fromPost('idpessoa',null);
 
             $session = $this->getSession();
             $usuario = $session['info'];
 
-            $em = $this->getEntityManager();
-
-            $usuario->empresa = 'SA';
-
-            $sql = "select distinct em.apelido as emp,
-                            m.descricao as marca,
-                            i.cod_item||c.descricao as cod_item,
-                            i.descricao,
-                            null as frete_rat,
-                            null total
-                        from ms.tb_estoque e,
-                    ms.tb_item i,
-                    ms.tb_categoria c,
-                    ms.tb_item_categoria ic,
-                    ms.empresa em,
-                    ms.tb_marca m
-                    where e.id_item = i.id_item
-                    and e.id_categoria = c.id_categoria
-                    and e.id_empresa = em.id_empresa
-                    and e.id_item = ic.id_item
-                    and e.id_categoria = ic.id_categoria
-                    and ic.id_marca = m.id_marca
-                    and i.cod_item||c.descricao in ($lprod)
-                    and em.apelido = '$dest'";
-
-            $conn = $em->getConnection();
-            $stmt = $conn->prepare($sql);
+            // $em = $this->getEntityManager();
+            // $conn = $em->getConnection();
+            // $sql = "call pkg_nfxboleto.inserir(:emp, :idlote, :dtboleto, :nrnf, :dtemissao, :idpessoa)";
+            // $stmt = $conn->prepare($sql);
+            // $stmt->bindParam(':emp', $emp);
+            // $stmt->bindParam(':idlote', $idlote);
+            // $stmt->bindParam(':dtboleto', $dtboleto);
+            // $stmt->bindParam(':nrnf', $nrnf);
+            // $stmt->bindParam(':dtemissao', $dtemissao);
+            // $stmt->bindParam(':idpessoa', $idpessoa);
+            // $result = $stmt->execute();
             
-            $stmt->execute();
-            $results = $stmt->fetchAll();
-
-            $hydrator = new ObjectProperty;
-            $hydrator->addStrategy('frete_rat', new ValueStrategy);
-            $hydrator->addStrategy('total', new ValueStrategy);
-            $stdClass = new StdClass;
-            $resultSet = new HydratingResultSet($hydrator, $stdClass);
-            $resultSet->initialize($results);
-
-            $data = array();
-            foreach ($resultSet as $row) {
-                $data[] = $hydrator->extract($row);
-            }
-
             $this->setCallbackData($data);
+            $this->setMessage("Solicitação enviada com sucesso.");
             
         } catch (\Exception $e) {
             $this->setCallbackError($e->getMessage());

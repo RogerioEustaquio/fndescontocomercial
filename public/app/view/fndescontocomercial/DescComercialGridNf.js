@@ -65,7 +65,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                             colvalor
                         ];
         
-
         Ext.applyIf(me, {
 
             store: Ext.create('Ext.data.Store', {
