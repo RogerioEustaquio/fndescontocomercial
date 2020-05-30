@@ -76,9 +76,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     tooltip: 'NFs',
                     handler: function(grid, rowIndex, colIndex) {
 
+                        grid.getSelectionModel().select(rowIndex);
                         var rec = grid.getStore().getAt(rowIndex);
-                        var id = rec.get('id');
-                        var emp= rec.get('emp');
 
                         var objWin = Ext.getCmp('descontocomercialwin');
 
@@ -87,7 +86,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         }
                         
                         objWin = Ext.create('App.view.fndescontocomercial.DescComercialWin');
-                        objWin.down('toolbar').down('form').down('#empnf').setValue(emp);
+                        objWin.down('toolbar').down('form').down('#empnf').setValue(rec.get('emp'));
+                        objWin.down('#idlancamento').setValue(rec.get('idLote'));
                         objWin.show();
 
                         // console.log(objWin.down('#btnvinculanf'));
@@ -101,15 +101,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             var dadosnf = objWin.down('grid').getSelection()[0].getData();
  
                             var param = {
-                                            emp: emp,
+                                            emp: rec.get('emp'),
                                             idlote: rec.get('idLote'),
                                             dtboleto: rec.get('data'),
                                             nrnf: dadosnf.numeroNf,
                                             dtemissao: dadosnf.dataEmissao,
                                             idpessoa: dadosnf.idPessoa
                                         };
-                            
-                            console.log(param);
 
                             Ext.Ajax.request({
                                 url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
@@ -142,7 +140,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colbtn
                         ];
         
-
         Ext.applyIf(me, {
 
             store: Ext.create('Ext.data.Store', {
@@ -158,7 +155,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         rootProperty: 'data'
                     }
                 },
-                autoLoad: true
+                autoLoad: false
             }),
             columns: arraycolums,
             listeners: {

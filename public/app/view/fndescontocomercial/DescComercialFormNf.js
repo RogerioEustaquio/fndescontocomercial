@@ -54,13 +54,19 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                         var nrnf = form.up('form').down('#nrnf').getValue();
                                         var dtemissao = form.up('form').down('#dtemissao').getRawValue();
 
-                                        var myStore =  me.up('panel').down('grid').getStore();
-                                        var myproxy = myStore.getProxy();
-                                        myproxy.setExtraParams({empnf: empnf,
-                                                                nrnf: nrnf,
-                                                                dtemissao: dtemissao
-                                                                });
-                                        myStore.reload();
+                                        if(nrnf == '' && dtemissao == ''){
+                                            Ext.Msg.alert('info', 'Informe numero da Nf ou Data');
+
+                                        }else{
+
+                                            var myStore =  me.up('panel').down('grid').getStore();
+                                            var myproxy = myStore.getProxy();
+                                            myproxy.setExtraParams({empnf: empnf,
+                                                                    nrnf: nrnf,
+                                                                    dtemissao: dtemissao
+                                                                    });
+                                            myStore.reload();
+                                        }
                                     }
                                 });
 

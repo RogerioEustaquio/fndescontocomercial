@@ -244,28 +244,28 @@ class FnDescontoComercialController extends AbstractRestfulController
         $data = array();
         
         try {
+            $session = $this->getSession();
+            $usuario = $session['info']->usuario_sistema;
+
             $emp = $this->params()->fromPost('emp',null);
             $idlote = $this->params()->fromPost('idlote',null);
-            $dtboleto = $this->params()->fromPost('dtboleto',null);
+            $dtboleto = $this->params()->fromPost('data',null);
             $nrnf  = $this->params()->fromPost('nrnf',null);
             $dtemissao  = $this->params()->fromPost('dtemissao',null);
             $idpessoa  = $this->params()->fromPost('idpessoa',null);
 
-            $session = $this->getSession();
-            $usuario = $session['info'];
-
-            // $em = $this->getEntityManager();
-            // $conn = $em->getConnection();
-            // $sql = "call pkg_nfxboleto.inserir(:emp, :idlote, :dtboleto, :nrnf, :dtemissao, :idpessoa)";
-            // $stmt = $conn->prepare($sql);
+            $em = $this->getEntityManager();
+            $conn = $em->getConnection();
+            $sql = "call pkg_fi_desconto_com_nota.inserir( :idlancamento, :numero_nota, :usuario)";
+            $stmt = $conn->prepare($sql);
             // $stmt->bindParam(':emp', $emp);
-            // $stmt->bindParam(':idlote', $idlote);
+            $stmt->bindParam(':idlancamento', $idlote);
             // $stmt->bindParam(':dtboleto', $dtboleto);
-            // $stmt->bindParam(':nrnf', $nrnf);
+            $stmt->bindParam(':numero_nota', $nrnf);
             // $stmt->bindParam(':dtemissao', $dtemissao);
             // $stmt->bindParam(':idpessoa', $idpessoa);
-            // $result = $stmt->execute();
-            
+            $stmt->bindParam(':usuario', $usuario);
+            $result = $stmt->execute();
             $this->setCallbackData($data);
             $this->setMessage("Solicitação enviada com sucesso.");
             

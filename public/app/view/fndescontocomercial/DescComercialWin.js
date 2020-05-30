@@ -16,6 +16,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialWin', {
         xtype: 'fndescontocomercialgridnf'
     },
     bbar:[
+        {
+            xtype: 'displayfield',
+            fieldLabel: 'Lancamento',
+            margin: '2 2 2 2',
+            name: 'idlancamento',
+            id: 'idlancamento',
+            labelWidth: 70
+        },
         '->',
         {
             xtype: 'form',
