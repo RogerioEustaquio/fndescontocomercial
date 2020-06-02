@@ -119,16 +119,27 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         objWin.down('#idlancamento').setValue(rec.get('idLote'));
                         objWin.show();
 
-                        if(rec.get('numeroNota')){
+                        if(rec.get('numeroNota')){ // Verificar se possível realizar alteração
                             btnplus.setDisabled(true);
                             objWin.down('#btnvinculanf').setDisabled(true);
+
+                            // Ext.Msg.show({
+                            //     message: 'Já existe nota vinculada. Deseja continuar?',
+                            //     buttons: Ext.Msg.YESNO,
+                            //     fn: function(btn) {
+                                    
+                            //         if (btn === 'yes') {
+                            //             objWin.down('#btnvinculanf').setDisabled(false);
+                            //             // Verificar permissão do usuário
+                            //             console.log(USUARIO.usuario_sistema);
+                            //         }else{
+                            //             objWin.close();
+                            //         }
+                            //     }
+                            // });
                         }
 
                         objWin.down('#btnvinculanf').on('click',function (){
-                            // grid.getStore().load();
-                            // objWin.close();
-                            // console.log(rec.getData()); // Dados do boleto
-                            // console.log(objWin.down('grid').getSelection()[0].getData()); //Dados NF selecionada
 
                             var dadosnf = objWin.down('grid').getSelection();
 

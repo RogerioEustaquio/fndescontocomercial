@@ -86,6 +86,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                                                 dtinicio: btndtinicio,
                                                                 dtfim: btndtfim
                                                                 });
+
                                         myStore.reload();
 
                                     }

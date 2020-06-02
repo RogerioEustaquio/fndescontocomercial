@@ -151,6 +151,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                         and ic.id_marca = m.id_marca
                         and vi.id_pessoa = p.id_pessoa
                         and vi.id_operacao in (4,7)
+                        and e.apelido = '$emp'
                         and e.apelido = nt.emp
                         and vi.numero_nf = trim(nt.numero_nota)
                         group by e.apelido, vi.data_emissao, vi.numero_nf, vi.usuario_desconto, vi.id_pessoa, p.id_pessoa, p.nome) nf
