@@ -18,7 +18,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                     {name:'idPessoa',mapping:'idPessoa'},
                     {name:'nome',mapping:'nome'},
                     {name:'dataEmissao',mapping:'dataEmissao'},
-                    {name:'valor',mapping:'valor',type: 'number'}
+                    {name:'valor',mapping:'valor',type: 'number'},
+                    {name:'mb',mapping:'mb',type: 'number'}
                     ]
         });
 

@@ -19,7 +19,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     {name:'descricao',mapping:'descricao'},
                     {name:'valorDebito',mapping:'valorDebito',type: 'number'},
                     {name:'valorCredito',mapping:'valorCredito',type: 'number'},
-                    {name:'complemento',mapping:'complemento'}
+                    {name:'complemento',mapping:'complemento'},
+                    {name:'numeroNota',mapping:'numeroNota'},
+                    {name:'valor',mapping:'valor',type: 'number'},
+                    {name:'mb',mapping:'mb',type: 'number'}
                     ]
         });
 
@@ -66,8 +69,33 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             flex: 1
                         };
         
+        var colnf =  {
+            text: 'NF',
+            dataIndex: 'numeroNota',  
+            Width: 100
+        };
+
+        var colvalor =  {
+            text: 'Valor',
+            dataIndex: 'valor',  
+            Width: 100,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
+
+        var colmb =  {
+            text: 'MB',
+            dataIndex: 'mb',  
+            Width: 100,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
+
         var colbtn =   {
             xtype:'actioncolumn',
+            dataIndex: 'actioncolumn',  
             width:50,
             align: 'center',
             items: [
@@ -76,6 +104,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     tooltip: 'NFs',
                     handler: function(grid, rowIndex, colIndex) {
 
+                        var btnplus = this;
                         grid.getSelectionModel().select(rowIndex);
                         var rec = grid.getStore().getAt(rowIndex);
 
@@ -98,32 +127,49 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             // console.log(rec.getData()); // Dados do boleto
                             // console.log(objWin.down('grid').getSelection()[0].getData()); //Dados NF selecionada
 
-                            var dadosnf = objWin.down('grid').getSelection()[0].getData();
- 
-                            var param = {
-                                            emp: rec.get('emp'),
-                                            idlote: rec.get('idLote'),
-                                            dtboleto: rec.get('data'),
-                                            nrnf: dadosnf.numeroNf,
-                                            dtemissao: dadosnf.dataEmissao,
-                                            idpessoa: dadosnf.idPessoa
-                                        };
+                            var dadosnf = objWin.down('grid').getSelection();
 
-                            Ext.Ajax.request({
-                                url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
-                                method: 'POST',
-                                params: param,
-                                success: function (response) {
+                            if(dadosnf== ''){
+                                Ext.Msg.alert('info', 'Selecione uma NF');
 
-                                    var result = Ext.decode(response.responseText);
-                                    if(result.success){
+                            }else{
+                                dadosnf = dadosnf[0].getData();
 
-                                        console.log(result.message);
+                                var param = {
+                                    emp: rec.get('emp'),
+                                    idlote: rec.get('idLote'),
+                                    dtboleto: rec.get('data'),
+                                    nrnf: dadosnf.numeroNf,
+                                    dtemissao: dadosnf.dataEmissao,
+                                    idpessoa: dadosnf.idPessoa
+                                };
+
+                                // console.log(btnplus);
+
+                                Ext.Ajax.request({
+                                    url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
+                                    method: 'POST',
+                                    params: param,
+                                    success: function (response) {
+
+                                        var result = Ext.decode(response.responseText);
+                                        if(result.success){
+
+                                            // console.log(result.message);
+                                            Ext.Msg.alert('info', result.message);
+                                            rec.set('numeroNota',dadosnf.numeroNf);
+                                            rec.set('valor',dadosnf.valor);
+                                            rec.set('mb',dadosnf.mb);
+
+                                            objWin.down('#btnvinculanf').setDisabled(true);
+
+                                        }
 
                                     }
-
-                                }
-                            });
+                                });
+                            }
+ 
+                            
                         });
 
                     }
@@ -137,8 +183,11 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colvldeb,
                             colvlcred,
                             colcomp,
-                            colbtn
-                        ];
+                            colnf,
+                            colvalor,
+                            colmb,
+                            colbtn                            
+                          ];
         
         Ext.applyIf(me, {
 
