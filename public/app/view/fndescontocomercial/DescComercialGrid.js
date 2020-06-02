@@ -119,7 +119,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         objWin.down('#idlancamento').setValue(rec.get('idLote'));
                         objWin.show();
 
-                        // console.log(objWin.down('#btnvinculanf'));
+                        if(rec.get('numeroNota')){
+                            btnplus.setDisabled(true);
+                            objWin.down('#btnvinculanf').setDisabled(true);
+                        }
 
                         objWin.down('#btnvinculanf').on('click',function (){
                             // grid.getStore().load();
@@ -144,8 +147,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                     idpessoa: dadosnf.idPessoa
                                 };
 
-                                // console.log(btnplus);
-
                                 Ext.Ajax.request({
                                     url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
                                     method: 'POST',
@@ -162,6 +163,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                             rec.set('mb',dadosnf.mb);
 
                                             objWin.down('#btnvinculanf').setDisabled(true);
+                                            btnplus.setDisabled(true);
+                                            objWin.close();
 
                                         }
 

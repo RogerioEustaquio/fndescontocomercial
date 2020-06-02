@@ -160,6 +160,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                 and trim(dn.numero_nota) = nf.numero_nf(+)
                 $andsql
                 order by lx.data desc";
+
             // $sql = "select lx.id,
             //                 lx.emp,
             //                 lx.id_lote, 
@@ -167,7 +168,10 @@ class FnDescontoComercialController extends AbstractRestfulController
             //                 lx.descricao,
             //                 lx.valor_debito,
             //                 lx.valor_credito,
-            //                 lx.complemento, lx.historico
+            //                 lx.complemento,
+            //                 lx.historico,
+            //                 dn.id_lancamento,
+            //                 dn.numero_nota
             //         from (SELECT EM.APELIDO||'-'||LC.ID_LOTE||'-'||LC.DATA AS ID,
             //                         EM.APELIDO AS EMP,
             //                         --LC.ID_LANCAMENTO,
