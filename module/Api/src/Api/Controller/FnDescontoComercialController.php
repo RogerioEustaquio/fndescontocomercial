@@ -103,7 +103,10 @@ class FnDescontoComercialController extends AbstractRestfulController
                         lx.descricao,
                         lx.valor_debito,
                         lx.valor_credito,
-                        lx.complemento, lx.historico,
+                        lx.complemento,
+                        lx.historico,
+                        dn.id_lancamento,
+                        dn.numero_nota,
                         nf.data_emissao,
                         nf.valor,
                         nf.mb
