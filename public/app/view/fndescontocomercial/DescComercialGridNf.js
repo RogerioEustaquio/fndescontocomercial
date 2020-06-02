@@ -17,8 +17,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                     {name:'numeroNf',mapping:'numeroNf'},
                     {name:'idPessoa',mapping:'idPessoa'},
                     {name:'nome',mapping:'nome'},
-                    {name:'dataEmissao',mapping:'dataEmissao'},
+                    {name:'dataEmissao',mapping:'dataEmissao',type:'date'},
                     {name:'valor',mapping:'valor',type: 'number'},
+                    {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'mb',mapping:'mb',type: 'number'}
                     ]
         });
@@ -47,7 +48,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
         var colemissao =  {
                             text: 'Emissão',
                             dataIndex: 'dataEmissao',  
-                            Width: 100
+                            Width: 100,
+                            renderer: function (v) { 
+                                return Ext.Date.format(v, 'd/m/Y')
+                            }
                         };
         var colvalor =  {
             text: 'Valor',

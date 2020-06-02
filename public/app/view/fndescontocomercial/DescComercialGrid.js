@@ -15,13 +15,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             extend: 'Ext.data.Model',
             fields:[{name:'emp',mapping:'emp'},
                     {name:'idLote',mapping:'idLote'},
-                    {name:'data',mapping:'data'},
+                    {name:'data',mapping:'data', type: 'date'},
                     {name:'descricao',mapping:'descricao'},
                     {name:'valorDebito',mapping:'valorDebito',type: 'number'},
                     {name:'valorCredito',mapping:'valorCredito',type: 'number'},
                     {name:'complemento',mapping:'complemento'},
                     {name:'numeroNota',mapping:'numeroNota'},
                     {name:'valor',mapping:'valor',type: 'number'},
+                    {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'mb',mapping:'mb',type: 'number'}
                     ]
         });
@@ -40,7 +41,11 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var coldata =  {
                             text: 'Data',
                             dataIndex: 'data',
-                            width: 140
+                            width: 140,
+                            renderer: function (v) { 
+                                return Ext.Date.format(v, 'd/m/Y')
+                            }
+                            // renderer: Ext.util.Format.dateRenderer('d/m/Y H:i')
                         };
         var coldescri= {
                             text: 'Descrição',
@@ -84,6 +89,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             }
         };
 
+        var colrob =  {
+            text: 'Valor MWM',
+            dataIndex: 'valorMwm',  
+            Width: 100,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
         var colmb =  {
             text: 'MB',
             dataIndex: 'mb',  
@@ -118,25 +131,27 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         objWin.down('toolbar').down('form').down('#empnf').setValue(rec.get('emp'));
                         objWin.down('#idlancamento').setValue(rec.get('idLote'));
                         objWin.show();
+                        var urlAction = '/api/fndescontocomercial/inserirvinculonf';
 
                         if(rec.get('numeroNota')){ // Verificar se possível realizar alteração
                             btnplus.setDisabled(true);
                             objWin.down('#btnvinculanf').setDisabled(true);
 
-                            // Ext.Msg.show({
-                            //     message: 'Já existe nota vinculada. Deseja continuar?',
-                            //     buttons: Ext.Msg.YESNO,
-                            //     fn: function(btn) {
+                            Ext.Msg.show({
+                                message: 'Já existe nota vinculada. Deseja continuar?',
+                                buttons: Ext.Msg.YESNO,
+                                fn: function(btn) {
                                     
-                            //         if (btn === 'yes') {
-                            //             objWin.down('#btnvinculanf').setDisabled(false);
-                            //             // Verificar permissão do usuário
-                            //             console.log(USUARIO.usuario_sistema);
-                            //         }else{
-                            //             objWin.close();
-                            //         }
-                            //     }
-                            // });
+                                    if (btn === 'yes') {
+                                        objWin.down('#btnvinculanf').setDisabled(false);
+                                        // Verificar permissão do usuário
+                                        urlAction = '/api/fndescontocomercial/alterarvinculonf'
+
+                                    }else{
+                                        objWin.close();
+                                    }
+                                }
+                            });
                         }
 
                         objWin.down('#btnvinculanf').on('click',function (){
@@ -159,7 +174,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                 };
 
                                 Ext.Ajax.request({
-                                    url : BASEURL + '/api/fndescontocomercial/vincularnfboleto',
+                                    url : BASEURL + urlAction,
                                     method: 'POST',
                                     params: param,
                                     success: function (response) {
@@ -171,6 +186,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                             Ext.Msg.alert('info', result.message);
                                             rec.set('numeroNota',dadosnf.numeroNf);
                                             rec.set('valor',dadosnf.valor);
+                                            rec.set('valorMwm',dadosnf.valorMwm);
                                             rec.set('mb',dadosnf.mb);
 
                                             objWin.down('#btnvinculanf').setDisabled(true);
@@ -199,6 +215,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colcomp,
                             colnf,
                             colvalor,
+                            colrob,
                             colmb,
                             colbtn                            
                           ];

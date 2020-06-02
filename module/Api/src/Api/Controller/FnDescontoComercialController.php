@@ -109,6 +109,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                         dn.numero_nota,
                         nf.data_emissao,
                         nf.valor,
+                        nf.valor_mwm,
                         nf.mb
                 from (SELECT EM.APELIDO||'-'||LC.ID_LOTE||'-'||LC.DATA AS ID,
                                 EM.APELIDO AS EMP,
@@ -134,6 +135,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                         (select e.apelido as emp, vi.numero_nf, vi.id_pessoa, p.nome,
                                 trunc(vi.data_emissao) as data_emissao,
                                 sum(vi.rob) as valor,
+                                sum(case when ic.id_marca in (/*MWM*/23, /*MWM IESA*/539, /*MWM OPCIONAL*/10414) then vi.rob end) valor_mwm,
                                 round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb 
                         from pricing.ie_ve_venda_item vi,
                                 ms.empresa e,
@@ -207,10 +209,12 @@ class FnDescontoComercialController extends AbstractRestfulController
             $results = $stmt->fetchAll();
 
             $hydrator = new ObjectProperty;
-            $hydrator->addStrategy('VALOR_DEBITO', new ValueStrategy);
-            $hydrator->addStrategy('VALOR_CREDITO', new ValueStrategy);
-            $hydrator->addStrategy('VALOR', new ValueStrategy);
-            $hydrator->addStrategy('MB', new ValueStrategy);
+            $hydrator->addStrategy('data', new ValueStrategy);
+            $hydrator->addStrategy('valor_debito', new ValueStrategy);
+            $hydrator->addStrategy('valor_credito', new ValueStrategy);
+            $hydrator->addStrategy('valor', new ValueStrategy);
+            $hydrator->addStrategy('valor_mwm', new ValueStrategy);
+            $hydrator->addStrategy('mb', new ValueStrategy);
             $stdClass = new StdClass;
             $resultSet = new HydratingResultSet($hydrator, $stdClass);
             $resultSet->initialize($results);
@@ -259,8 +263,9 @@ class FnDescontoComercialController extends AbstractRestfulController
                             vi.numero_nf,
                             vi.id_pessoa,
                             p.nome,
-                            to_char(trunc(vi.data_emissao),'dd/mm/yyyy') as data_emissao,
+                            vi.data_emissao,
                             sum(vi.rob) as valor,
+                            sum(case when ic.id_marca in (/*MWM*/23, /*MWM IESA*/539, /*MWM OPCIONAL*/10414) then vi.rob end) valor_mwm, 
                             round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb 
                     from pricing.ie_ve_venda_item vi,
                             ms.empresa e,
@@ -294,8 +299,10 @@ class FnDescontoComercialController extends AbstractRestfulController
             $results = $stmt->fetchAll();
 
             $hydrator = new ObjectProperty;
-            $hydrator->addStrategy('VALOR', new ValueStrategy);
-            $hydrator->addStrategy('MB', new ValueStrategy);
+            $hydrator->addStrategy('data_emissao', new ValueStrategy);
+            $hydrator->addStrategy('valor', new ValueStrategy);
+            $hydrator->addStrategy('valor_mwm', new ValueStrategy);
+            $hydrator->addStrategy('mb', new ValueStrategy);
             $stdClass = new StdClass;
             $resultSet = new HydratingResultSet($hydrator, $stdClass);
             $resultSet->initialize($results);
@@ -314,7 +321,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         return $this->getCallbackModel();
     }
 
-    public function vincularnfboletoAction()
+    public function inserirvinculonfAction()
     {
         $data = array();
         
@@ -351,4 +358,40 @@ class FnDescontoComercialController extends AbstractRestfulController
         return $this->getCallbackModel();
     }
 
+    public function alterarvinculonfAction()
+    {
+        $data = array();
+        
+        try {
+            $session = $this->getSession();
+            $usuario = $session['info']->usuario_sistema;
+
+            $emp = $this->params()->fromPost('emp',null);
+            $idlote = $this->params()->fromPost('idlote',null);
+            $dtboleto = $this->params()->fromPost('data',null);
+            $nrnf  = $this->params()->fromPost('nrnf',null);
+            $dtemissao  = $this->params()->fromPost('dtemissao',null);
+            $idpessoa  = $this->params()->fromPost('idpessoa',null);
+
+            $em = $this->getEntityManager();
+            $conn = $em->getConnection();
+            $sql = "call pkg_fi_desconto_com_nota.alterar( :emp, :idlancamento, :numero_nota, :usuario)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':emp', $emp);
+            $stmt->bindParam(':idlancamento', $idlote);
+            // $stmt->bindParam(':dtboleto', $dtboleto);
+            $stmt->bindParam(':numero_nota', $nrnf);
+            // $stmt->bindParam(':dtemissao', $dtemissao);
+            // $stmt->bindParam(':idpessoa', $idpessoa);
+            $stmt->bindParam(':usuario', $usuario);
+            $result = $stmt->execute();
+            $this->setCallbackData($data);
+            $this->setMessage("Solicitação enviada com sucesso.");
+            
+        } catch (\Exception $e) {
+            $this->setCallbackError($e->getMessage());
+        }
+        
+        return $this->getCallbackModel();
+    }
 }
