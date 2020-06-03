@@ -81,12 +81,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                         var dtfim = form.up('form').down('#dtemissaofim').getRawValue();
                                         var nome = form.up('form').down('#nome').getRawValue();
 
-                                        if(dtinicio && dtfim == ''){
-                                            dtfim = dtinicio;
-                                        }else{
-                                            if(dtfim && dtinicio == ''){
-                                                dtinicio = dtfim;
-                                            }
+                                        if(dtfim && dtinicio == ''){
+                                            dtinicio = dtfim;
                                         }
 
                                         if(nrnf == '' && dtinicio == ''){

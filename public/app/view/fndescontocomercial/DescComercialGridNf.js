@@ -61,13 +61,21 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                 return utilFormat.Value(v);
             }
         };
-        
+        var colvmwm =  {
+            text: 'Valor MWM',
+            dataIndex: 'valorMwm',  
+            Width: 100,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
         var arraycolums = [ colemp,
                             colnf,
                             colidpe,
                             colnome,
                             colemissao,
-                            colvalor
+                            colvalor,
+                            colvmwm
                         ];
         
         Ext.applyIf(me, {

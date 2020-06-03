@@ -218,9 +218,14 @@ class FnDescontoComercialController extends AbstractRestfulController
             $andsql .=  "and vi.numero_nf like '$nrnf%' ";
         }
 
-        if($dtinicio && $dtfim){
+        if($dtinicio){
             $andsql .=  "and vi.data_emissao >= '$dtinicio' ";
+        }
+        
+        if($dtfim){
             $andsql .=  "and vi.data_emissao <= '$dtfim' ";
+        }else{
+            $andsql .=  "and vi.data_emissao <= sysdate ";
         }
 
         if($nome){
