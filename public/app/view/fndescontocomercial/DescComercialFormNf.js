@@ -31,10 +31,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                         id: 'nrnf'
                     });
 
-        var dtemissao = Ext.create('Ext.form.field.Date',{
+        var iniemissao = Ext.create('Ext.form.field.Date',{
                         name: 'Emissão',
-                        id: 'dtemissao',
-                        fieldLabel: 'Data',
+                        id: 'dtemissaoinicio',
+                        fieldLabel: 'Início',
                         margin: '2 2 2 2',
                         width: 135,
                         labelWidth: 35,
@@ -43,7 +43,32 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
             //            maxValue: new Date(),
                         emptyText: '__/__/____'
                     });
-
+        var fimemissao = Ext.create('Ext.form.field.Date',{
+            name: 'Emissão',
+            id: 'dtemissaofim',
+            fieldLabel: 'Fim',
+            margin: '2 2 2 2',
+            width: 135,
+            labelWidth: 35,
+            format: 'd/m/Y',
+            altFormats: 'dmY',
+//            maxValue: new Date(),
+            emptyText: '__/__/____'
+        });
+        var nomecli = Ext.create('Ext.form.field.Text',{
+            fieldLabel: 'Nome',
+            width: 200,
+            margin: '2 2 2 2',
+            name: 'nome',
+            id: 'nome',
+            enableKeyEvents: true,
+            listeners: {
+                keyup: function(v) {
+                    var valor = v.getValue().toUpperCase();
+                    v.setValue(valor);
+                }
+            }
+        });
         var consulta = Ext.create('Ext.Button', {
                                     text: 'Consultar',
                                     id: 'btnconsultarnf',
@@ -52,9 +77,19 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                         
                                         var empnf = form.up('form').down('#empnf').getValue();
                                         var nrnf = form.up('form').down('#nrnf').getValue();
-                                        var dtemissao = form.up('form').down('#dtemissao').getRawValue();
+                                        var dtinicio = form.up('form').down('#dtemissaoinicio').getRawValue();
+                                        var dtfim = form.up('form').down('#dtemissaofim').getRawValue();
+                                        var nome = form.up('form').down('#nome').getRawValue();
 
-                                        if(nrnf == '' && dtemissao == ''){
+                                        if(dtinicio && dtfim == ''){
+                                            dtfim = dtinicio;
+                                        }else{
+                                            if(dtfim && dtinicio == ''){
+                                                dtinicio = dtfim;
+                                            }
+                                        }
+
+                                        if(nrnf == '' && dtinicio == ''){
                                             Ext.Msg.alert('info', 'Informe numero da Nf ou Data');
 
                                         }else{
@@ -63,7 +98,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                             var myproxy = myStore.getProxy();
                                             myproxy.setExtraParams({empnf: empnf,
                                                                     nrnf: nrnf,
-                                                                    dtemissao: dtemissao
+                                                                    dtinicio: dtinicio,
+                                                                    dtfim: dtfim,
+                                                                    nome: nome
                                                                     });
                                             myStore.reload();
                                         }
@@ -75,7 +112,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
             items: [
                 empbox,
                 nrnf,
-                dtemissao,
+                iniemissao,
+                fimemissao,
+                nomecli,
                 consulta
             ]
 

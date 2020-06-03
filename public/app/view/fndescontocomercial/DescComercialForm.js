@@ -21,7 +21,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                     // name: 'empresas',
                                     id: 'comboempresa',
                                     itemId: 'comboempresa',
-                                    width: 200,
+                                    width: 90,
                                     margin: '2 2 2 2',
                                     store: Ext.data.Store({
                                         fields: [{ name: 'empresa' }, { name: 'nome' }],
@@ -36,7 +36,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                     }),
                                     queryParam: 'empresa',
                                     queryMode: 'remote',
-                                    displayField: 'nome',
+                                    displayField: 'empresa',
                                     emptyText: 'Empresa',
                                     forceSelection: true,
                                     // disabled: false,
@@ -47,7 +47,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
         var dtinicio = Ext.create('Ext.form.field.Date',{
                                     name: 'dtinicio',
                                     id: 'dtinicio',
-                                    fieldLabel: 'Data',
+                                    fieldLabel: 'Início',
                                     margin: '2 2 2 2',
                                     width: 135,
                                     labelWidth: 35,
@@ -60,7 +60,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
         var dtfim = Ext.create('Ext.form.field.Date',{
                                     name: 'dtfim',
                                     id: 'dtfim',
-                                    fieldLabel: 'Data',
+                                    fieldLabel: 'Fim',
                                     margin: '2 2 2 2',
                                     width: 135,
                                     labelWidth: 35,

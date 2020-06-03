@@ -17,7 +17,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                     {name:'numeroNf',mapping:'numeroNf'},
                     {name:'idPessoa',mapping:'idPessoa'},
                     {name:'nome',mapping:'nome'},
-                    {name:'dataEmissao',mapping:'dataEmissao',type:'date'},
+                    {name:'dataEmissao',mapping:'dataEmissao',type:'date', dateFormat: 'd/m/Y'},
                     {name:'valor',mapping:'valor',type: 'number'},
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'mb',mapping:'mb',type: 'number'}

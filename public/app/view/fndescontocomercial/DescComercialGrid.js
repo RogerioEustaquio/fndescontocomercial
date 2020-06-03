@@ -15,12 +15,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             extend: 'Ext.data.Model',
             fields:[{name:'emp',mapping:'emp'},
                     {name:'idLote',mapping:'idLote'},
-                    {name:'data',mapping:'data', type: 'date'},
+                    {name:'data',mapping:'data', type: 'date', dateFormat: 'd/m/Y'},
                     {name:'descricao',mapping:'descricao'},
                     {name:'valorDebito',mapping:'valorDebito',type: 'number'},
                     {name:'valorCredito',mapping:'valorCredito',type: 'number'},
                     {name:'complemento',mapping:'complemento'},
                     {name:'numeroNota',mapping:'numeroNota'},
+                    {name:'dataEmissao',mapping:'dataEmissao', type: 'date', dateFormat: 'd/m/Y'},
                     {name:'valor',mapping:'valor',type: 'number'},
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'mb',mapping:'mb',type: 'number'}
@@ -34,28 +35,29 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         };
         var collote =   {
                             text: 'Lote',
-                            width: 120,
+                            width: 100,
                             dataIndex: 'idLote',
                             hidden: false
                         };
         var coldata =  {
-                            text: 'Data',
+                            text: 'Lançamento',
                             dataIndex: 'data',
-                            width: 140,
-                            renderer: function (v) { 
-                                return Ext.Date.format(v, 'd/m/Y')
+                            width: 100,
+                            renderer: function (v) {
+                                var dt =  Ext.Date.format(v, 'd/m/Y');
+                                return dt;
+                                
                             }
-                            // renderer: Ext.util.Format.dateRenderer('d/m/Y H:i')
                         };
         var coldescri= {
                             text: 'Descrição',
                             dataIndex: 'descricao',
-                            width: 110
+                            width: 90
                         };
         var colvldeb =  {
                             text: 'Vl. Debito',
                             dataIndex: 'valorDebito',  
-                            Width: 100,
+                            width: 100,
                             renderer: function (v) {
                                 return utilFormat.Value(v);
                             }
@@ -63,7 +65,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colvlcred =  {
             text: 'Vl. Credito',
             dataIndex: 'valorCredito',  
-            Width: 100,
+            width: 90,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -71,19 +73,35 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colcomp =   {
                             text: 'Complemento',
                             dataIndex: 'complemento',            
-                            flex: 1
+                            width: 160
                         };
         
         var colnf =  {
             text: 'NF',
             dataIndex: 'numeroNota',  
-            Width: 100
+            width: 80
+        };
+        var colemissao =  {
+            text: 'Emissão',
+            dataIndex: 'dataEmissao',
+            width: 100,
+            renderer: function (v) {
+                var dt =  Ext.Date.format(v, 'd/m/Y');
+                return dt;
+            }
+            // renderer: Ext.util.Format.dateRenderer('d/m/Y H:i')
+        };
+        var colnome =  {
+            text: 'Nome',
+            dataIndex: 'nome',  
+            minWidth: 120,
+            flex:1
         };
 
         var colvalor =  {
             text: 'Valor',
             dataIndex: 'valor',  
-            Width: 100,
+            width: 100,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -92,7 +110,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colrob =  {
             text: 'Valor MWM',
             dataIndex: 'valorMwm',  
-            Width: 100,
+            width: 100,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -100,7 +118,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colmb =  {
             text: 'MB',
             dataIndex: 'mb',  
-            Width: 100,
+            width: 100,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -185,6 +203,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                             // console.log(result.message);
                                             Ext.Msg.alert('info', result.message);
                                             rec.set('numeroNota',dadosnf.numeroNf);
+                                            rec.set('dataEmissao',dadosnf.dataEmissao);
+                                            rec.set('nome',dadosnf.nome);
                                             rec.set('valor',dadosnf.valor);
                                             rec.set('valorMwm',dadosnf.valorMwm);
                                             rec.set('mb',dadosnf.mb);
@@ -214,6 +234,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colvlcred,
                             colcomp,
                             colnf,
+                            colemissao,
+                            colnome,
                             colvalor,
                             colrob,
                             colmb,
