@@ -31,7 +31,7 @@ class FnDescontoComercialController extends AbstractRestfulController
             $em = $this->getEntityManager();
 
             $sql = "
-                SELECT ID_EMPRESA, APELIDO AS EMPRESA, NOME FROM MS.EMPRESA WHERE ID_MATRIZ = 1 ORDER BY EMPRESA
+                SELECT ID_EMPRESA, APELIDO AS EMPRESA, NOME FROM MS.EMPRESA WHERE ID_MATRIZ = 1 and APELIDO not in ('CD','M2','TL','SP') ORDER BY EMPRESA
             ";
             
             $conn = $em->getConnection();
