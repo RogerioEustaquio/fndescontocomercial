@@ -142,6 +142,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         objWin = Ext.create('App.view.fndescontocomercial.DescComercialWin');
                         objWin.down('toolbar').down('form').down('#empnf').setValue(rec.get('emp'));
                         objWin.down('#idlancamento').setValue(rec.get('idLote'));
+                        objWin.setTitle(rec.get('complemento'));
                         objWin.show();
                         var urlAction = '/api/fndescontocomercial/inserirvinculonf';
 
@@ -195,7 +196,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                         if(result.success){
 
                                             // console.log(result.message);
-                                            Ext.Msg.alert('info', result.message);
+                                            // Ext.Msg.alert('info', result.message);
                                             rec.set('numeroNota',dadosnf.numeroNf);
                                             rec.set('dataEmissao',dadosnf.dataEmissao);
                                             rec.set('nome',dadosnf.nome);
