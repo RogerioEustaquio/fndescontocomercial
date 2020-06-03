@@ -80,6 +80,9 @@ class FnDescontoComercialController extends AbstractRestfulController
 
         if($dtinicio){
             $andsql .=  "and lx.DATA >= '$dtinicio' ";
+            $andempsql .= "and vi.data_emissao >= add_months(to_date('$dtinicio', 'DD/MM/RRRR'), -6) ";
+        }else{
+            $andempsql .= "and vi.data_emissao >= add_months(to_date(sysdate, 'DD/MM/RRRR'), -6) ";
         }
 
         if($dtfim){
@@ -157,7 +160,7 @@ class FnDescontoComercialController extends AbstractRestfulController
                                 and vi.id_pessoa = p.id_pessoa
                                 and vi.id_operacao in (4,7)
                                 $andempsql
-                                and vi.data_emissao >= add_months(to_date('$dtinicio', 'DD/MM/RRRR'), -6)
+                                
                                 and e.apelido = nt.emp
                                 and vi.numero_nf = trim(nt.numero_nota)
                                 group by e.apelido, vi.data_emissao, vi.numero_nf, vi.usuario_desconto, vi.id_pessoa, p.id_pessoa, p.nome) nf
