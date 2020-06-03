@@ -315,6 +315,27 @@ class FnDescontoComercialController extends AbstractRestfulController
 
             $em = $this->getEntityManager();
             $conn = $em->getConnection();
+
+            $sql = "select count(*) count from FI_DESCONTO_COMERCIAL_NOTA where emp = '$emp' and numero_nota = '$nrnf'";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $hydrator = new ObjectProperty;
+            $stdClass = new StdClass;
+            $resultSet = new HydratingResultSet($hydrator, $stdClass);
+            $resultSet->initialize($results);
+
+            $data = array();
+            foreach ($resultSet as $row) {
+                $data[] = $hydrator->extract($row);
+            }
+            
+            if($data[0]["count"] != 0 ){
+                $this->setCallbackData($data);
+                $this->setCallbackError("A NF selecionada já tem lançamento.");
+                return $this->getCallbackModel();
+            }
+
             $sql = "call pkg_fi_desconto_com_nota.inserir( :emp, :idlancamento, :numero_nota, :usuario)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':emp', $emp);
@@ -352,6 +373,26 @@ class FnDescontoComercialController extends AbstractRestfulController
 
             $em = $this->getEntityManager();
             $conn = $em->getConnection();
+
+            $sql = "select count(*) count from FI_DESCONTO_COMERCIAL_NOTA where emp = '$emp' and numero_nota = '$nrnf'";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll();
+            $hydrator = new ObjectProperty;
+            $stdClass = new StdClass;
+            $resultSet = new HydratingResultSet($hydrator, $stdClass);
+            $resultSet->initialize($results);
+
+            $data = array();
+            foreach ($resultSet as $row) {
+                $data[] = $hydrator->extract($row);
+            }
+            
+            if($data[0]["count"] >0){
+                $this->setCallbackError("A NF selecionada já tem lançamento.");
+                return $this->getCallbackModel();
+            }
+
             $sql = "call pkg_fi_desconto_com_nota.alterar( :emp, :idlancamento, :numero_nota, :usuario)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':emp', $emp);

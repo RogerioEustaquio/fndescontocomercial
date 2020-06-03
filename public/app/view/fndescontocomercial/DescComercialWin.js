@@ -3,8 +3,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialWin', {
     xtype: 'descontocomercialwin',
     id: 'descontocomercialwin',
     title: 'Notas',
-    height: 400,
-    width: 800,
+    height: 440,
+    width: 860,
     layout: 'fit',
     border: false,
     tbar: [

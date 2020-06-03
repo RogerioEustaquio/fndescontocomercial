@@ -35,7 +35,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                         };
         var collote =   {
                             text: 'Lote',
-                            width: 100,
+                            width: 80,
                             dataIndex: 'idLote',
                             hidden: false
                         };
@@ -49,31 +49,26 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                 
                             }
                         };
-        var coldescri= {
-                            text: 'Descrição',
-                            dataIndex: 'descricao',
-                            width: 90
-                        };
         var colvldeb =  {
-                            text: 'Vl. Debito',
+                            text: 'Debito',
                             dataIndex: 'valorDebito',  
-                            width: 100,
+                            width: 80,
                             renderer: function (v) {
                                 return utilFormat.Value(v);
                             }
                         };
         var colvlcred =  {
-            text: 'Vl. Credito',
-            dataIndex: 'valorCredito',  
-            width: 90,
-            renderer: function (v) {
-                return utilFormat.Value(v);
-            }
-        };
+                            text: 'Credito',
+                            dataIndex: 'valorCredito',  
+                            width: 80,
+                            renderer: function (v) {
+                                return utilFormat.Value(v);
+                            }
+                        };
         var colcomp =   {
                             text: 'Complemento',
                             dataIndex: 'complemento',            
-                            width: 160
+                            flex: 1
                         };
         
         var colnf =  {
@@ -84,7 +79,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colemissao =  {
             text: 'Emissão',
             dataIndex: 'dataEmissao',
-            width: 100,
+            width: 90,
             renderer: function (v) {
                 var dt =  Ext.Date.format(v, 'd/m/Y');
                 return dt;
@@ -94,14 +89,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colnome =  {
             text: 'Nome',
             dataIndex: 'nome',  
-            minWidth: 120,
-            flex:1
+            width: 120
         };
 
         var colvalor =  {
             text: 'Valor',
             dataIndex: 'valor',  
-            width: 100,
+            width: 80,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -110,7 +104,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colrob =  {
             text: 'Valor MWM',
             dataIndex: 'valorMwm',  
-            width: 100,
+            width: 96,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -118,7 +112,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var colmb =  {
             text: 'MB',
             dataIndex: 'mb',  
-            width: 100,
+            width: 80,
             renderer: function (v) {
                 return utilFormat.Value(v);
             }
@@ -213,6 +207,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                             btnplus.setDisabled(true);
                                             objWin.close();
 
+                                        }else{
+                                            Ext.Msg.alert('info', result.message);
                                         }
 
                                     }
@@ -229,7 +225,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
         var arraycolums = [ colemp,
                             collote,
                             coldata,
-                            coldescri,
                             colvldeb,
                             colvlcred,
                             colcomp,
