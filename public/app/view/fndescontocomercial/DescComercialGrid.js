@@ -111,6 +111,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
 
         var colbtn =   {
             xtype:'actioncolumn',
+            id: 'actioncolumn', 
             dataIndex: 'actioncolumn',  
             width:50,
             align: 'center',
@@ -118,6 +119,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                 {
                     iconCls: 'fa fa-plus green-text',
                     tooltip: 'NFs',
+                    getClass: function (value, meta, record) {
+                        
+                        if(record.get('emp').length > 3){
+                            return 'x-hidden'; // when u want to hide icon
+                        }else{
+                            return 'fa fa-plus green-text' ;
+                        }
+                    },
                     handler: function(grid, rowIndex, colIndex) {
 
                         var btnplus = this;
@@ -247,7 +256,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             }),
             columns: arraycolums,
             listeners: {
+
             }
+            
 
         });
 

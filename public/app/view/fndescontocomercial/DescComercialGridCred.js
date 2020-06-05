@@ -50,7 +50,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridCred',{
         var colvlcred =  {
                             text: 'Credito',
                             dataIndex: 'valorCredito',  
-                            width: 80,
+                            width: 100,
                             renderer: function (v) {
                                 return utilFormat.Value(v);
                             }
@@ -102,13 +102,21 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridCred',{
 
         var colbtn =   {
             xtype:'actioncolumn',
-            dataIndex: 'actioncolumn',  
+            dataIndex: 'actioncolumncred',  
             width:50,
             align: 'center',
             items: [
                 {
                     iconCls: 'fa fa-plus green-text',
                     tooltip: 'NFs',
+                    getClass: function (value, meta, record) {
+                        
+                        if(record.get('emp').length > 3){
+                            return 'x-hidden'; // when u want to hide icon
+                        }else{
+                            return 'fa fa-plus green-text' ;
+                        }
+                    },
                     handler: function(grid, rowIndex, colIndex) {
 
                         var btnplus = this;
@@ -184,7 +192,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridCred',{
                                             rec.set('nome',dadosnf.nome);
                                             rec.set('valor',dadosnf.valor);
                                             rec.set('valorMwm',dadosnf.valorMwm);
-                                            rec.set('mb',dadosnf.mb);
 
                                             objWin.down('#btnvinculanfcred').setDisabled(true);
                                             btnplus.setDisabled(true);

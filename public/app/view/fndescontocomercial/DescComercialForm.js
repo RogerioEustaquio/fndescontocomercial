@@ -87,7 +87,25 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                                                 dtfim: btndtfim
                                                                 });
 
-                                        myStore.reload();
+                                        myStore.load(function(records){
+
+                                                        var objSoma = {debito:0,valor:0,mwm:0,mb:0};
+                                                        for(var i=0;i<records.length;i++){
+                                                            objSoma.debito = parseFloat(objSoma.debito) + parseFloat(records[i].getData().valorDebito);
+                                                            objSoma.valor = parseFloat(objSoma.valor) + parseFloat(records[i].getData().valor);
+                                                            objSoma.mwm = parseFloat(objSoma.mwm) + parseFloat(records[i].getData().valorMwm);
+                                                            objSoma.mb = parseFloat(objSoma.mb) + parseFloat(records[i].getData().mb);
+                                                        }
+
+                                                        myStore.add({
+                                                            emp: '<td colspan="3"> Total </td>',
+                                                            valorDebito: objSoma.debito,
+                                                            valor: objSoma.valor,
+                                                            valorMwm: objSoma.mwm,
+                                                            mb: objSoma.mb
+                                                        });
+                                                     }
+                                                    );
 
                                     }
                                 });

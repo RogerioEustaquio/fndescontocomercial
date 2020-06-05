@@ -87,7 +87,7 @@ Ext.define('App.controller.ApplicationController', {
             });
         };
         
-        viewportTabs.setActiveItem(tab);
+        viewportTabs.setActiveItem(0);
     }
     
 });
