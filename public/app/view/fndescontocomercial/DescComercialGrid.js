@@ -23,7 +23,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     {name:'dataEmissao',mapping:'dataEmissao', type: 'date', dateFormat: 'd/m/Y'},
                     {name:'valor',mapping:'valor',type: 'number'},
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
-                    {name:'mb',mapping:'mb',type: 'number'}
+                    {name:'comentarioConclusao',mapping:'comentarioConclusao'},
+                    {name:'mb',mapping:'mb',type: 'number'},
+                    {name:'dev',mapping:'dev',type: 'number'},
+                    {name:'devValorMwm',mapping:'devValorMwm',type: 'number'}
                     ]
         });
 
@@ -75,7 +78,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                 var dt =  Ext.Date.format(v, 'd/m/Y');
                 return dt;
             }
-            // renderer: Ext.util.Format.dateRenderer('d/m/Y H:i')
         };
         var colnome =  {
             text: 'Nome',
@@ -109,6 +111,30 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             }
         };
 
+        var coldev =   {
+            text: 'Dev. NF',
+            width: 80,
+            dataIndex: 'dev',
+            hidden: false
+        };
+
+        var coldevvl =   {
+            text: 'Dev. MWM',
+            width: 100,
+            dataIndex: 'devValorMwm',
+            hidden: false,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
+
+        var colcoment =  {
+            text: 'Conclusão',
+            dataIndex: 'comentarioConclusao',  
+            width: 80,
+            hidden: true
+        };
+
         var colbtn =   {
             xtype:'actioncolumn',
             id: 'actioncolumn', 
@@ -117,14 +143,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             align: 'center',
             items: [
                 {
-                    iconCls: 'fa fa-plus green-text',
+                    iconCls: 'fa fa-plus blue-text',
                     tooltip: 'NFs',
                     getClass: function (value, meta, record) {
                         
                         if(record.get('emp').length > 3){
                             return 'x-hidden'; // when u want to hide icon
                         }else{
-                            return 'fa fa-plus green-text' ;
+                            return 'fa fa-plus blue-text';
                         }
                     },
                     handler: function(grid, rowIndex, colIndex) {
@@ -195,14 +221,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                         var result = Ext.decode(response.responseText);
                                         if(result.success){
 
-                                            // console.log(result.message);
-                                            // Ext.Msg.alert('info', result.message);
                                             rec.set('numeroNota',dadosnf.numeroNf);
                                             rec.set('dataEmissao',dadosnf.dataEmissao);
                                             rec.set('nome',dadosnf.nome);
                                             rec.set('valor',dadosnf.valor);
                                             rec.set('valorMwm',dadosnf.valorMwm);
                                             rec.set('mb',dadosnf.mb);
+                                            rec.set('dev',dadosnf.dev);
 
                                             objWin.down('#btnvinculanf').setDisabled(true);
                                             btnplus.setDisabled(true);
@@ -223,6 +248,110 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                 }]
         };
 
+        var colbtn2 =   {
+            xtype:'actioncolumn',
+            id: 'actioncolumn2', 
+            dataIndex: 'actioncolumn2',  
+            width:50,
+            align: 'center',
+            items: [
+                {
+                    iconCls: 'fa fa-check',
+                    tooltip: 'NFs',
+                    getClass: function (value, meta, record) {
+
+                        if(record.get('emp').length > 3){
+                            return 'x-hidden'; // when u want to hide icon
+                        }else{
+                            var corcss = 'red-text';
+                            if(record.get('numeroNota') == null){
+                                return 'x-hidden';
+                            }else{
+
+                                if(record.get('comentarioConclusao') == null){
+                                    corcss = 'orange-text' ;
+    
+                                }else{
+                                    corcss = 'green-text' ;
+                                }
+                            }
+
+                            return 'fa fa-check '+ corcss ;
+                        }
+                    },
+                    handler: function(grid, rowIndex, colIndex) {
+
+                        grid.getSelectionModel().select(rowIndex);
+                        var rec = grid.getStore().getAt(rowIndex);
+
+                        var objWin = Ext.getCmp('descontocomercialconcluiwin');
+
+                        if(objWin != null){
+                            objWin.destroy();
+                        }
+                        
+                        objWin = Ext.create('App.view.fndescontocomercial.DescComercialConcluiWin');
+                        objWin.setTitle(rec.get('complemento'));
+                        objWin.show();
+
+                        var formnf = objWin.down('#formnf');
+                        
+                        formnf.down('#nf').setValue(rec.get('numeroNota'));
+                        var dtEmissao = Ext.Date.format(rec.get('dataEmissao'), 'd/m/Y');
+                        formnf.down('#emissao').setValue(dtEmissao);
+                        formnf.down('#nome').setValue(rec.get('nome'));
+                        formnf.down('#valor').setValue(rec.get('valor'));
+                        formnf.down('#mwm').setValue(rec.get('valorMwm'));
+                        formnf.down('#mb').setValue(rec.get('mb'));
+
+                        objWin.down('#formvconlcusao').down('textareafield').setValue(rec.get('comentarioConclusao'));
+
+                        objWin.down('#btnconsultarnf').on('click',function (){
+
+                            var formc = objWin.down('#formvconlcusao');
+                            var comentario = formc.down('#comentario').getValue();
+
+                            if(comentario.length<2){
+                                Ext.Msg.alert('info', 'Comentário invalido. ('+comentario+')');
+                                return '';
+                            }
+
+                            var param = {
+                                emp: rec.get('emp'),
+                                idlote: rec.get('idLote'),
+                                dtboleto: rec.get('data'),
+                                nrnf: rec.get('numeroNota'),
+                                dtemissao: dtEmissao,
+                                comentario: comentario
+                            };
+
+                            Ext.Ajax.request({
+                                url : BASEURL + '/api/fndescontocomercial/concluirvinculonf',
+                                method: 'POST',
+                                params: param,
+                                success: function (response) {
+
+                                    var result = Ext.decode(response.responseText);
+                                    if(result.success){
+
+                                        rec.set('comentarioConclusao',comentario);
+                                        objWin.close();
+
+                                    }else{
+                                        Ext.Msg.alert('info', result.message);
+                                    }
+
+                                }
+                            });
+
+                        }
+                );
+
+                        
+                    }
+                }]
+        };
+
         var arraycolums = [ colemp,
                             collote,
                             coldata,
@@ -234,7 +363,11 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colvalor,
                             colrob,
                             colmb,
-                            colbtn                            
+                            coldev,
+                            coldevvl,
+                            colcoment,
+                            colbtn,
+                            colbtn2
                           ];
         
         Ext.applyIf(me, {
@@ -258,7 +391,6 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             listeners: {
 
             }
-            
 
         });
 

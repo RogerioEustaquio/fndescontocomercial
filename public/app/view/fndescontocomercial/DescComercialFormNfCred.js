@@ -30,6 +30,13 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNfCred', {
                         name: 'nrnf',
                         id: 'nrnf'
                     });
+        var nrnfs = Ext.create('Ext.form.field.Text',{
+            fieldLabel: 'NF Venda',
+            width: 100,
+            margin: '2 2 2 2',
+            name: 'nrnfs',
+            id: 'nrnfs'
+        });
 
         var iniemissao = Ext.create('Ext.form.field.Date',{
                         name: 'Emissão',
@@ -108,6 +115,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNfCred', {
             items: [
                 empbox,
                 nrnf,
+                nrnfs,
                 iniemissao,
                 fimemissao,
                 nomecli,

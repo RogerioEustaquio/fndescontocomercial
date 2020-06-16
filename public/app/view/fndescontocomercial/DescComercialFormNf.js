@@ -24,7 +24,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                 });
 
         var nrnf = Ext.create('Ext.form.field.Text',{
-                        fieldLabel: 'NF',
+                        fieldLabel: 'NF Devolução',
                         width: 100,
                         margin: '2 2 2 2',
                         name: 'nrnf',
@@ -117,5 +117,31 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
         });
 
         me.callParent(arguments);
+    },
+
+    gerarExcel: function() {
+        var me = this;
+        var grid = me.getMainpanel().down('tabpanel').getActiveTab();
+        grid.setLoading({ msg: '<b>Gerando Arquivo.' });
+        var myStore = me.getStore().getData();
+
+        Ext.Ajax.request({
+            url: BASEURL +'/api/fndescontocomercial/gerarexcel',
+            method: 'POST',
+            params: {dados: myStore,
+                     nome: nome},
+            success: function (response) {
+                        var result = Ext.decode(response.responseText);
+                        if(result.success){
+
+                            var rsarray = result.data;
+                            console.log(rsarray);
+
+                        }
+            }
+        });
+
+        window.open(BASEURL + '/temp/' + nome, '_self');
+        setTimeout(function() { grid.setLoading(false); }, 10000);
     }
 });

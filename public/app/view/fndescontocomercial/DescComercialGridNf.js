@@ -20,7 +20,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                     {name:'dataEmissao',mapping:'dataEmissao',type:'date', dateFormat: 'd/m/Y'},
                     {name:'valor',mapping:'valor',type: 'number'},
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
-                    {name:'mb',mapping:'mb',type: 'number'}
+                    {name:'mb',mapping:'mb',type: 'number'},
+                    {name:'dev',mapping:'dev',type: 'number'},
+                    {name:'devValorMwm',mapping:'devValorMwm',type: 'number'}
                     ]
         });
 
@@ -38,7 +40,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
         var colidpe =  {
                             text: 'Id Pessoa',
                             dataIndex: 'idPessoa',
-                            width: 140
+                            width: 100
                         };
         var colnome= {
                             text: 'Nome',
@@ -69,13 +71,33 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                 return utilFormat.Value(v);
             }
         };
+
+        var coldev   =   {
+            text: 'Dev. NF',
+            width: 80,
+            dataIndex: 'dev',
+            hidden: false
+        };
+
+        var coldevvl =   {
+            text: 'Dev. MWM',
+            width: 100,
+            dataIndex: 'devValorMwm',
+            hidden: false,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
+
         var arraycolums = [ colemp,
                             colnf,
                             colidpe,
                             colnome,
                             colemissao,
                             colvalor,
-                            colvmwm
+                            colvmwm,
+                            coldev,
+                            coldevvl
                         ];
         
         Ext.applyIf(me, {
