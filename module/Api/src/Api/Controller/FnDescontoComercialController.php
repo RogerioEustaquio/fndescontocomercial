@@ -532,6 +532,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         
         return $this->getCallbackModel();
     }
+    
     public function listarnfscredAction()
     {
         $data = array();
@@ -541,6 +542,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         $dtinicio   = $this->params()->fromQuery('dtinicio',null);
         $dtfim      = $this->params()->fromQuery('dtfim',null);
         $nome       = $this->params()->fromQuery('nome',null);
+        $nrnfs       = $this->params()->fromQuery('nrnfs',null);
 
         $andsql = "";
         if($empnf){
@@ -549,6 +551,10 @@ class FnDescontoComercialController extends AbstractRestfulController
 
         if($nrnf){
             $andsql .=  "and c.numero_nota||'-'||c.serie_nota like '$nrnf%' ";
+        }
+
+        if($nrnfs){
+            $andsql .=  "and v.numero_nf||'-'||v.serie_nf like '$nrnfs%' ";
         }
 
         if($dtinicio){
