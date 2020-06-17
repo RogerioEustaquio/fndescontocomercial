@@ -24,7 +24,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialFormNf', {
                                 });
 
         var nrnf = Ext.create('Ext.form.field.Text',{
-                        fieldLabel: 'NF Devolução',
+                        fieldLabel: 'NF',
                         width: 100,
                         margin: '2 2 2 2',
                         name: 'nrnf',
