@@ -257,7 +257,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             items: [
                 {
                     iconCls: 'fa fa-check',
-                    tooltip: 'NFs',
+                    tooltip: 'Conclusão',
                     getClass: function (value, meta, record) {
 
                         if(record.get('emp').length > 3){
