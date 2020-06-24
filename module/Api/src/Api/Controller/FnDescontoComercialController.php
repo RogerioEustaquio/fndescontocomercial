@@ -797,9 +797,10 @@ class FnDescontoComercialController extends AbstractRestfulController
 
             $sm = $this->getEvent()->getApplication()->getServiceManager();
             $excelService = $sm->get('ExcelService');
-            fopen('..\temp\fndescontocomercial.xlsx','w'); // Paramentro $phpExcel somente retorno
+            $arqFile = '.\data\fndescontocomercial.xlsx';
+            fopen($arqFile,'w'); // Paramentro $phpExcel somente retorno
 
-            $phpExcel = $excelService->createPHPExcelObject('..\temp\fndescontocomercial.xlsx');
+            $phpExcel = $excelService->createPHPExcelObject($arqFile);
             $phpExcel->getActiveSheet()->setCellValue('A'.'1', 'Emp')
                                        ->setCellValue('B'.'1', 'Lote')
                                        ->setCellValue('C'.'1', 'Lançamento')
