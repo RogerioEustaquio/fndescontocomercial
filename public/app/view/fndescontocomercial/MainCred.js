@@ -13,6 +13,10 @@ Ext.define('App.view.fndescontocomercial.MainCred', {
                 {
                     xtype: 'fndescontocomercialformcred'
                 }
+                ,'->',
+                {
+                    xtype: 'fndescontocomercialarqformcred'
+                }
             ]
         },
     items: [

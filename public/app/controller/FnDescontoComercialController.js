@@ -16,6 +16,9 @@ Ext.define('App.controller.FnDescontoComercialController', {
         'App.view.fndescontocomercial.DescComercialWinCred',
         'App.view.fndescontocomercial.DescComercialGridNfCred',
         'App.view.fndescontocomercial.DescComercialFormNfCred',
+        // 
+        'App.view.fndescontocomercial.DescComercialArqForm',
+        'App.view.fndescontocomercial.DescComercialArqFormCred'
     ],
 
     control: {

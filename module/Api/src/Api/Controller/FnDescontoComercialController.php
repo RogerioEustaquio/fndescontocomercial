@@ -784,8 +784,11 @@ class FnDescontoComercialController extends AbstractRestfulController
     {
         $data = array();
         
-        $dados = $this->params()->fromQuery('dados',null);
-        $nome = $this->params()->fromQuery('nome',null);
+        $dados = $this->params()->fromPost('dados',null);
+        $nome = $this->params()->fromPost('nome',null);
+        $total = $this->params()->fromPost('total',null);
+
+        $linhas = explode(";",$dados);
 
         try {
 
@@ -797,14 +800,78 @@ class FnDescontoComercialController extends AbstractRestfulController
             fopen('..\temp\fndescontocomercial.xlsx','w'); // Paramentro $phpExcel somente retorno
 
             $phpExcel = $excelService->createPHPExcelObject('..\temp\fndescontocomercial.xlsx');
-            $phpExcel->getActiveSheet()->setCellValue('A'.'1', 'teste')
-                                       ->setCellValue('B'.'1', 1)
-                                       ->setCellValue('C'.'1', 2)
-                                       ->setCellValue('D'.'1', 3)
-                                       ->setCellValue('E'.'1', 4)
-                                       ->setCellValue('F'.'1', 5)
-                                       ->setCellValue('G'.'1', 6);
-                   
+            $phpExcel->getActiveSheet()->setCellValue('A'.'1', 'Emp')
+                                       ->setCellValue('B'.'1', 'Lote')
+                                       ->setCellValue('C'.'1', 'Lançamento')
+                                       ->setCellValue('D'.'1', 'Debito')
+                                       ->setCellValue('E'.'1', 'Complemento')
+                                       ->setCellValue('F'.'1', 'NF')
+                                       ->setCellValue('G'.'1', 'Emissão')
+                                       ->setCellValue('H'.'1', 'Nome')
+                                       ->setCellValue('I'.'1', 'Valor')
+                                       ->setCellValue('J'.'1', 'Valor MWM')
+                                       ->setCellValue('K'.'1', 'MB')
+                                       ->setCellValue('L'.'1', 'Dev. ND')
+                                       ->setCellValue('M'.'1', 'Dev. MWM')
+                                       ->setCellValue('N'.'1', 'Comentário Conclusão');
+            $ix=2;
+            for ($i=0; $i < count($linhas)-1; $i++) {
+                
+                $linhaexcel = explode("&",$linhas[$i]);
+                $emp  = explode(":",$linhaexcel['0']);
+                $lote = explode(":",$linhaexcel[1]);
+                $lancamento = explode(":",$linhaexcel[2]);
+                $debito = explode(":",$linhaexcel[3]);
+                $comp = explode(":",$linhaexcel[4]);
+                $nrnf = explode(":",$linhaexcel[5]);
+                $dtemissao = explode(":",$linhaexcel[6]);
+                $nome = explode(":",$linhaexcel[7]);
+                $valor = explode(":",$linhaexcel[8]);
+                $vlMWM = explode(":",$linhaexcel[9]);
+                $vlMb = explode(":",$linhaexcel[10]);
+                $dev = explode(":",$linhaexcel[11]);
+                $devValorMwm = explode(":",$linhaexcel[12]);
+                $comentarioConclusao = explode(":",$linhaexcel[13]);
+
+                $phpExcel->getActiveSheet()->setCellValue('A'.$ix, $emp[1])
+                                           ->setCellValue('B'.$ix, $lote[1])
+                                           ->setCellValue('C'.$ix, $lancamento[1])
+                                           ->setCellValue('D'.$ix, $debito[1])
+                                           ->setCellValue('E'.$ix, $comp[1])
+                                           ->setCellValue('F'.$ix, $nrnf[1])
+                                           ->setCellValue('G'.$ix, $dtemissao[1])
+                                           ->setCellValue('H'.$ix, $nome[1])
+                                           ->setCellValue('I'.$ix, $valor[1])
+                                           ->setCellValue('J'.$ix, $vlMWM[1])
+                                           ->setCellValue('K'.$ix, $vlMb[1])
+                                           ->setCellValue('L'.$ix, $dev[1])
+                                           ->setCellValue('M'.$ix, $devValorMwm[1])
+                                           ->setCellValue('N'.$ix, $comentarioConclusao[1]);
+                $ix++;
+            }
+
+            $totais  = explode("&",$total);
+            $vtdebito  = explode(":",$totais[0]);
+            $vtvalor  = explode(":",$totais[1]);
+            $vtmwm  = explode(":",$totais[2]);
+            $vtmb  = explode(":",$totais[3]);
+            $vtdevmwm  = explode(":",$totais[4]);
+
+            $phpExcel->getActiveSheet()->setCellValue('A'.$ix, 'Total')
+                                       ->setCellValue('B'.$ix, '')
+                                       ->setCellValue('C'.$ix, '')
+                                       ->setCellValue('D'.$ix, $vtdebito[1])
+                                       ->setCellValue('E'.$ix, '')
+                                       ->setCellValue('F'.$ix, '')
+                                       ->setCellValue('G'.$ix, '')
+                                       ->setCellValue('H'.$ix, '')
+                                       ->setCellValue('I'.$ix, $vtvalor[1])
+                                       ->setCellValue('J'.$ix, $vtmwm[1])
+                                       ->setCellValue('K'.$ix, $vtmb[1])
+                                       ->setCellValue('L'.$ix, '')
+                                       ->setCellValue('M'.$ix, $vtdevmwm[1])
+                                       ->setCellValue('N'.$ix, '');
+
             $objWriter = $sm->get('ExcelService')->createWriter($phpExcel, 'Excel5');
 
             $response = $excelService->createHttpResponse($objWriter, 200, [

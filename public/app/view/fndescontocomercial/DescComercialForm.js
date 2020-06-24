@@ -89,12 +89,38 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
 
                                         myStore.load(function(records){
 
-                                                        var objSoma = {debito:0,valor:0,mwm:0,mb:0};
+                                                        var objSoma = {debito:0,valor:0,mwm:0,mb:0,devmwm:0};
+                                                        var dados = new Array();
                                                         for(var i=0;i<records.length;i++){
                                                             objSoma.debito = parseFloat(objSoma.debito) + parseFloat(records[i].getData().valorDebito);
                                                             objSoma.valor = parseFloat(objSoma.valor) + parseFloat(records[i].getData().valor);
                                                             objSoma.mwm = parseFloat(objSoma.mwm) + parseFloat(records[i].getData().valorMwm);
                                                             objSoma.mb = parseFloat(objSoma.mb) + parseFloat(records[i].getData().mb);
+                                                            objSoma.devmwm = parseFloat(objSoma.devmwm) + parseFloat(records[i].getData().devValorMwm);
+
+                                                            var data = Ext.Date.format(records[i].get('data'), 'd/m/Y');
+                                                            var dtemissao = Ext.Date.format(records[i].get('dataEmissao'), 'd/m/Y');
+
+                                                            dados[i] = 'emp:'+records[i].getData().emp;
+                                                            dados[i] += '&idLote:'+records[i].getData().idLote;
+                                                            dados[i] += '&lancamento:'+ data;
+                                                            dados[i] += '&debito:'+records[i].getData().valorDebito;
+                                                            dados[i] += '&complemento:'+records[i].getData().complemento;
+                                                            dados[i] += '&nrnf:'+records[i].getData().numeroNota;
+                                                            dados[i] += '&dtemissao:'+dtemissao;
+                                                            dados[i] += '&nome:'+records[i].getData().nome;
+                                                            dados[i] += '&valor:'+records[i].getData().valor;
+                                                            dados[i] += '&valorMwm:'+records[i].getData().valorMwm;
+                                                            dados[i] += '&mb:'+records[i].getData().mb;
+                                                            dados[i] += '&dev:'+records[i].getData().dev;
+                                                            dados[i] += '&devValorMwm:'+records[i].getData().devValorMwm;
+                                                            dados[i] += '&comentarioConclusao:'+records[i].getData().comentarioConclusao;
+                                                            dados[i] += ";";
+
+                                                            var re = /null/gi;
+                                                            var replaceLinha = dados[i];
+                                                            dados[i]= replaceLinha.replace(re,'');
+
                                                         }
 
                                                         myStore.add({
@@ -102,8 +128,15 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                                             valorDebito: objSoma.debito,
                                                             valor: objSoma.valor,
                                                             valorMwm: objSoma.mwm,
-                                                            mb: objSoma.mb
+                                                            mb: objSoma.mb,
+                                                            devValorMwm: objSoma.devmwm
                                                         });
+                                                        
+                                                        // Adicionar dados para parametros button excel
+                                                        var btnExcel = me.up('toolbar').down('#fndescontocomercialarqform').down('button');
+                                                        btnExcel.dado = dados.toString();
+                                                        btnExcel.total= 'valorDebito:'+ objSoma.debito+'&valor:'+objSoma.valor+'&valorMwm:'+objSoma.mwm+'&mb:'+objSoma.mb+'&devmwm:'+objSoma.devmwm;
+
                                                      }
                                                     );
 

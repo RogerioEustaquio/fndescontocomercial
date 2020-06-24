@@ -13,7 +13,10 @@ Ext.define('App.view.fndescontocomercial.Main', {
                 {
                     xtype: 'fndescontocomercialform'
                 }
-                // ,'->',
+                ,'->',
+                {
+                    xtype: 'fndescontocomercialarqform'
+                }
                 // {
                 //     xtype: 'form',
                 //     layout: {
@@ -30,16 +33,19 @@ Ext.define('App.view.fndescontocomercial.Main', {
                 //                 url: BASEURL + '/api/fndescontocomercial/gerarexcel',
                 //                 handler: function(){
 
-                //                     // var grid = this.up('form').up('toolbar').up('panel').down('#fndescontocomercialgrid');
+                //                     var grid = this.up('form').up('toolbar').up('panel').down('#fndescontocomercialgrid');
 
-                //                     // var myStore = grid.getStore();
+                //                     var myStore = grid.getStore();
+                //                     var aqui = this;
 
-                //                     // var dados = new Array();
-                //                     // dados[0] = '{row:1,col:1,col:2}';
-                //                     // dados[1] = '{row:2,col:1,col:2}';
-                //                     // var nome = 'fndesccomercial';
-                //                     // this.setParams({dados: [dados],nome: nome});
-                //                     // console.log(this.params);
+                //                     var dados = new Array();
+                //                     dados[0] = '{row:1,col:1,col:2}';
+                //                     dados[1] = '{row:2,col:1,col:2}';
+                //                     var nome = 'fndesccomercial';
+                //                     aqui.params = {dados: [dados],nome: nome};
+                //                     aqui.url = BASEURL + '/api/fndescontocomercial/gerarexcel';
+
+                //                    console.log(aqui);
 
                 //                     // Ext.Ajax.request({
                 //                     //     url : BASEURL + '/api/fndescontocomercial/gerarexcel',
@@ -47,7 +53,8 @@ Ext.define('App.view.fndescontocomercial.Main', {
                 //                     //     params: {dados: dados,nome: nome},
                 //                     //     success: function (response) {
                 //                     //         console.log(response.responseText);
-                //                     //         open(response.responseText);
+                //                     //         var myWin = open("","_self");
+                //                     //         myWin.document.write(response);
                 //                     //     }
                 //                     // });
                 //                 }
