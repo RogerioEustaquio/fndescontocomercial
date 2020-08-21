@@ -2,7 +2,7 @@ Ext.define('App.view.fndescontocomercial.MainCred', {
     extend: 'Ext.panel.Panel',
     xtype: 'fndescontocomercialmaincred',
     id: 'descontocomercialmaincred',
-    title: 'Credito',
+    title: 'Crédito',
     requires: [
 
     ],
