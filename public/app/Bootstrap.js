@@ -24,7 +24,7 @@ Ext.application({
     defaultToken: 'home',
     
     launch: function() {
-        if(!USUARIO)
+        if(!USUARIO && USUARIO != '""')
         window.location.href = BASEURL + '/login';
 
         // Recupera os dados do usuário

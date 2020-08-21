@@ -85,7 +85,7 @@ class FnDescontoComercialController extends AbstractRestfulController
             $andsql .=  "and lx.DATA <= '$dtfim' ";
         }
 
-        if(!$andsql){
+        if(!$dtinicio && !$dtfim){
             $andsql = "AND lx.DATA >= sysdate-30 ";
             $andsql .= "AND lx.DATA <= sysdate";
         }

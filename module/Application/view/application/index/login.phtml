@@ -1,6 +1,139 @@
 <script>
-    Ext.onReady(function() {
+
+Ext.onReady(function() {
+
+    var myview = Ext.create('Ext.Viewport',{
+        layout: 'fit'
+    });
+
+    function funcLogar (user,pass){
+
+        params = {
+                user: user,
+                pass: pass
+            };
+
         Ext.MessageBox.show({
+            msg: 'Verificando a permissão de acesso...',
+            progressText: 'Saving...',
+            width: 300,
+            wait: {
+                interval: 200
+            }
+        });
+
+        Ext.Ajax.request({
+            url: BASEURL +'/api/Index/logar',
+            method: 'POST',
+            params: params,
+            success: function (response) {
+
+                Ext.MessageBox.hide();
+                var result = Ext.decode(response.responseText);
+
+                if(!result.success){
+                    new Noty({
+                        theme: 'relax',
+                        layout: 'bottomRight',
+                        type: 'error',
+                        closeWith: [],
+                        text: 'Acesso negado. '+result.msg
+                    }).show();
+                }else{
+                    window.location.href = BASEURL + '/';
+                }
+            }
+        });
+    };
+
+    var myform = Ext.create('Ext.panel.Panel', {
+                        id:'panellogin',
+                        layout: 'fit',
+                        tbar :[
+                            {
+                                xtype: 'image',
+                                src: '../data/logo.png',
+                                margin: '0 0 0 0',
+                                width: 40,
+                                height: 40,
+                                style: {
+                                    top:'0px !important',
+                                }
+                            },
+                            '->',
+                            {
+                                xtype: 'form',
+                                id:'formlogin',
+                                layout: 'hbox',
+                                border: false,
+                                items:[
+                                    {
+                                        xtype: 'textfield',
+                                        allowBlank: false,
+                                        // fieldLabel: 'Usuário',
+                                        id: 'user',
+                                        name: 'user',
+                                        emptyText: 'Usuário',
+                                        margin : '2 2 2 2',
+                                        whithField: 2
+                                    }, 
+                                    {
+                                        xtype: 'textfield',
+                                        allowBlank: false,
+                                        // fieldLabel: 'Senha',
+                                        id: 'pass',
+                                        name: 'pass',
+                                        emptyText: 'Senha',
+                                        inputType: 'password',
+                                        margin : '2 2 2 2',
+                                        listeners: {
+                                            specialkey: function(f,e){
+                                                if(e.getKey() == e.ENTER){
+
+                                                    var user = this.up('form').down('#user').getValue();
+                                                    var pass = this.up('form').down('#pass').getValue();
+
+                                                    funcLogar(user,pass);
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'button',
+                                        text: 'Login',
+                                        margin : '2 2 2 2',
+                                        handler: function(){
+
+                                            var user = this.up('form').down('#user').getValue();
+                                            var pass = this.up('form').down('#pass').getValue();
+
+                                            funcLogar(user,pass);
+                                        }
+                                    }
+                                ]
+
+                            }
+                        ],
+                        items:[
+                            {
+                                xtype: 'panel',
+                                fullscreen: true,
+                                layout: 'fit',
+                                items: [
+                                    {
+                                        xtype: 'image',
+                                        src: '../data/background.png',
+                                        style: {
+                                            iconAlign:'top !important'
+                                        },
+                                        flex: 1
+                                    }
+                                ]
+                            }
+                        ]
+                });
+        
+        var pMsg = Ext.MessageBox.show({
             msg: 'Verificando a permissão de acesso...',
             progressText: 'Saving...',
             width: 300,
@@ -15,15 +148,11 @@
             success: function (response) {
                 var result = Ext.decode(response.responseText);
                 Ext.MessageBox.hide();
-
+                
                 if(!result.success){
-                    new Noty({
-                        theme: 'relax',
-                        layout: 'bottomRight',
-                        type: 'error',
-                        closeWith: [],
-                        text: 'Acesso negado. Tente logar no agilize.'
-                    }).show();
+
+                    myform.down('toolbar').setHeight(60);
+                    myview.add(myform);
                 }
 
                 if(result.success){
@@ -31,5 +160,5 @@
                 }
             }
         });
-    });
+});
 </script>
