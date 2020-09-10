@@ -389,13 +389,13 @@ class FnDescontoComercialController extends AbstractRestfulController
         }
 
         if($dtinicio){
-            $andsql .=  "and vi.data_emissao >= '$dtinicio' ";
+            $andsql .=  "and trunc(vi.data_emissao) >= '$dtinicio' ";
         }
         
         if($dtfim){
-            $andsql .=  "and vi.data_emissao <= '$dtfim' ";
+            $andsql .=  "and trunc(vi.data_emissao) <= '$dtfim' ";
         }else{
-            $andsql .=  "and vi.data_emissao <= sysdate ";
+            $andsql .=  "and trunc(vi.data_emissao) <= sysdate ";
         }
 
         if($nome){
@@ -558,11 +558,11 @@ class FnDescontoComercialController extends AbstractRestfulController
         }
 
         if($dtinicio){
-            $andsql .=  "and c.data_entrada >= '$dtinicio' ";
+            $andsql .=  "and trunc(c.data_entrada) >= '$dtinicio' ";
         }
         
         if($dtfim){
-            $andsql .=  "and c.data_entrada <= '$dtfim' ";
+            $andsql .=  "and trunc(c.data_entrada) <= '$dtfim' ";
         }else{
             $andsql .=  "and c.data_entrada <= sysdate ";
         }
@@ -641,7 +641,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         
         try {
             $session = $this->getSession();
-            $usuario = $session['info']->usuario_sistema;
+            $usuario = $session['info']['usuarioSistema'];
 
             $emp = $this->params()->fromPost('emp',null);
             $idlote = $this->params()->fromPost('idlote',null);
@@ -696,7 +696,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         
         try {
             $session = $this->getSession();
-            $usuario = $session['info']->usuario_sistema;
+            $usuario = $session['info']['usuarioSistema'];
 
             $emp = $this->params()->fromPost('emp',null);
             $idlote = $this->params()->fromPost('idlote',null);
@@ -750,7 +750,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         
         try {
             $session = $this->getSession();
-            $usuario = $session['info']->usuario_sistema;
+            $usuario = $session['info']['usuarioSistema'];
 
             $emp = $this->params()->fromPost('emp',null);
             $idlote = $this->params()->fromPost('idlote',null);
@@ -793,7 +793,7 @@ class FnDescontoComercialController extends AbstractRestfulController
         try {
 
             $session = $this->getSession();
-            $usuario = $session['info']->usuario_sistema;
+            $usuario = $session['info']['usuarioSistema'];
 
             $sm = $this->getEvent()->getApplication()->getServiceManager();
             $excelService = $sm->get('ExcelService');
