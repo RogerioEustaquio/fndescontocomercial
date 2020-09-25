@@ -112,6 +112,9 @@ class FnDescontoComercialController extends AbstractRestfulController
                             nf.valor,
                             nf.valor_mwm,
                             nf.mb,
+                            nf.lb,
+                            nf.rol,
+                            round(((nf.lb-lx.valor_debito)/(nf.rol-lx.valor_debito))*100,2) as mbliq,
                             nf.nome,
                             nf.comentario_conclusao,
                             nd.nota_dev as dev,
@@ -144,7 +147,9 @@ class FnDescontoComercialController extends AbstractRestfulController
                                 trunc(vi.data_emissao) as data_emissao,
                                 sum(vi.rob) as valor,
                                 sum(case when ic.id_marca in (/*MWM*/23, /*MWM IESA*/539, /*MWM OPCIONAL*/10414) then vi.rob end) valor_mwm,
-                                round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb ,
+                                round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb,
+                                sum(nvl(vi.rol,0)) as rol,
+                                sum(nvl(vi.rol,0)-nvl(vi.custo,0)) as lb,
                                 nt.comentario_conclusao
                         from pricing.ie_ve_venda_item vi,
                                 ms.empresa e,
@@ -205,6 +210,7 @@ class FnDescontoComercialController extends AbstractRestfulController
             $hydrator->addStrategy('valor', new ValueStrategy);
             $hydrator->addStrategy('valor_mwm', new ValueStrategy);
             $hydrator->addStrategy('mb', new ValueStrategy);
+            $hydrator->addStrategy('mbliq', new ValueStrategy);
             $hydrator->addStrategy('dev_valor_mwm', new ValueStrategy);
             $stdClass = new StdClass;
             $resultSet = new HydratingResultSet($hydrator, $stdClass);
@@ -448,6 +454,8 @@ class FnDescontoComercialController extends AbstractRestfulController
                             nf.valor,
                             nf.valor_mwm,
                             nf.mb,
+                            nf.rol,
+                            nf.lb,
                             nd.nota_dev as dev,
                             nd.valor_mwm dev_valor_mwm
                     from    (select e.apelido as emp,
@@ -458,6 +466,8 @@ class FnDescontoComercialController extends AbstractRestfulController
                                     sum(vi.rob) as valor,
                                     sum(case when ic.id_marca in (/*MWM*/23, /*MWM IESA*/539, /*MWM OPCIONAL*/10414) then vi.rob end) valor_mwm, 
                                     round((sum(nvl(vi.rol,0)-nvl(vi.custo,0))/sum(vi.rol))*100,2) as mb,
+                                    sum(nvl(vi.rol,0)) as rol,
+                                    sum(nvl(vi.rol,0)-nvl(vi.custo,0)) as lb,
                                     vi.id_empresa
                             from    pricing.ie_ve_venda_item vi,
                                     ms.empresa e,
@@ -514,6 +524,8 @@ class FnDescontoComercialController extends AbstractRestfulController
             $hydrator->addStrategy('valor', new ValueStrategy);
             $hydrator->addStrategy('valor_mwm', new ValueStrategy);
             $hydrator->addStrategy('mb', new ValueStrategy);
+            $hydrator->addStrategy('rol', new ValueStrategy);
+            $hydrator->addStrategy('lb', new ValueStrategy);
             $hydrator->addStrategy('dev_valor_mwm', new ValueStrategy);
             $stdClass = new StdClass;
             $resultSet = new HydratingResultSet($hydrator, $stdClass);

@@ -25,6 +25,9 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'comentarioConclusao',mapping:'comentarioConclusao'},
                     {name:'mb',mapping:'mb',type: 'number'},
+                    {name:'lb',mapping:'lb',type: 'number'},
+                    {name:'rol',mapping:'rol',type: 'number'},
+                    {name:'mbliq',mapping:'mbliq',type: 'number'},
                     {name:'dev',mapping:'dev',type: 'number'},
                     {name:'devValorMwm',mapping:'devValorMwm',type: 'number'}
                     ]
@@ -111,6 +114,14 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
             }
         };
 
+        var colmbliq =  {
+            text: 'MB Liq.',
+            dataIndex: 'mbliq',  
+            width: 80,
+            renderer: function (v) {
+                return utilFormat.Value(v);
+            }
+        };
         var coldev =   {
             text: 'Dev. NF',
             width: 80,
@@ -228,6 +239,10 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                                             rec.set('valorMwm',dadosnf.valorMwm);
                                             rec.set('mb',dadosnf.mb);
                                             rec.set('dev',dadosnf.dev);
+
+                                            var mbliq = (parseFloat(dadosnf.lb)-parseFloat(rec.get('valorDebito')))/(parseFloat(dadosnf.rol)-parseFloat(rec.get('valorDebito')));
+                                            mbliq = parseFloat(mbliq)*100;
+                                            rec.set('mbliq',mbliq);
 
                                             objWin.down('#btnvinculanf').setDisabled(true);
                                             btnplus.setDisabled(true);
@@ -363,6 +378,7 @@ Ext.define('App.view.fndescontocomercial.DescComercialGrid',{
                             colvalor,
                             colrob,
                             colmb,
+                            colmbliq,
                             coldev,
                             coldevvl,
                             colcoment,

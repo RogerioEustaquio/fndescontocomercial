@@ -21,6 +21,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialGridNf',{
                     {name:'valor',mapping:'valor',type: 'number'},
                     {name:'valorMwm',mapping:'valorMwm',type: 'number'},
                     {name:'mb',mapping:'mb',type: 'number'},
+                    {name:'lb',mapping:'lb',type: 'number'},
+                    {name:'rol',mapping:'rol',type: 'number'},
                     {name:'dev',mapping:'dev',type: 'number'},
                     {name:'devValorMwm',mapping:'devValorMwm',type: 'number'}
                     ]
