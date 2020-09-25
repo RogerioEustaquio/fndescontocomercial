@@ -128,7 +128,8 @@ Ext.define('App.view.fndescontocomercial.DescComercialForm', {
                                                             valorDebito: objSoma.debito,
                                                             valor: objSoma.valor,
                                                             valorMwm: objSoma.mwm,
-                                                            mb: objSoma.mb,
+                                                            mb: null,
+                                                            mbliq: null,
                                                             devValorMwm: objSoma.devmwm
                                                         });
                                                         
